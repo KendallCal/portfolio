@@ -1,0 +1,87 @@
+---
+function calcYears(startDate: string, endDate?: string): string {
+  const start = new Date(startDate);
+  const end = endDate ? new Date(endDate) : new Date();
+  const months =
+    (end.getFullYear() - start.getFullYear()) * 12 +
+    (end.getMonth() - start.getMonth());
+  const years = Math.floor(months / 12);
+  const rem = months % 12;
+  if (years === 0) return `${rem} mes${rem !== 1 ? "es" : ""}`;
+  if (rem === 0) return `${years} año${years !== 1 ? "s" : ""}`;
+  return `${years} año${years !== 1 ? "s" : ""} ${rem} mes${rem !== 1 ? "es" : ""}`;
+}
+
+const experiences = [
+  {
+    role: "Mentor Académico en Proyectos de TI",
+    company: "Profesional Independiente",
+    date: "Enero 2025 - Actualidad",
+    startDate: "2025-01-01",
+    description:
+      "Acompaño a estudiantes universitarios en proyectos de programación, software y redes, explicando conceptos técnicos de forma clara y guiando la estructura, lógica y defensa de sus entregas.",
+  },
+  {
+    role: "Técnico de Soporte TI",
+    company: "Emprendimiento Personal",
+    date: "Noviembre 2021 - Actualidad",
+    startDate: "2021-11-01",
+    description:
+      "Brindo soporte técnico, diagnóstico y mantenimiento de computadoras, laptops y dispositivos móviles, resolviendo fallas de hardware, software, rendimiento y conectividad.",
+  },
+];
+---
+
+<section class="w-full scroll-mt-24" id="experience">
+  <h2 class="text-3xl font-bold text-white">Experiencia</h2>
+
+  <article class="mt-10 px-2">
+    <ul class="relative border-l border-zinc-700">
+      {
+        experiences.map((exp) => (
+          <li class="mb-8 ml-6 last:mb-0 md:mb-6">
+            {/* Dot */}
+            <span class="absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-700">
+              <svg
+                aria-hidden="true"
+                class="h-4 w-4 text-zinc-300"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
+                />
+                <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
+              </svg>
+            </span>
+
+            {/* Role + Company */}
+            <h3 class="mb-1 flex flex-wrap items-center gap-2 text-lg leading-6 font-semibold text-sky-400">
+              {exp.role}
+              <span class="font-normal text-white">-</span>
+              <span class="text-sm font-semibold text-orange-300">
+                {exp.company}
+              </span>
+            </h3>
+
+            {/* Date + Years badge */}
+            <div class="mb-2 flex flex-wrap items-center gap-2">
+              <time class="text-sm text-zinc-400">{exp.date}</time>
+              <span class="rounded-full bg-sky-400/10 px-2 py-0.5 text-xs font-medium text-sky-400">
+                {calcYears(exp.startDate)}
+              </span>
+            </div>
+
+            {/* Description */}
+            <p class="max-w-2xl text-pretty text-base leading-relaxed text-zinc-300">
+              {exp.description}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </article>
+</section>

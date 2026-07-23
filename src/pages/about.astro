@@ -1,0 +1,277 @@
+---
+import "../styles/global.css";
+import { Image } from "astro:assets";
+import fotoKendall from "../assets/Foto.png";
+import Layout from "../layouts/Layout.astro";
+import AWS from "../components/icons/AWS.astro";
+import Certificate from "../components/icons/Certificate.astro";
+import GoogleCloud from "../components/icons/GoogleCloud.astro";
+import IBM from "../components/icons/IBM.astro";
+import Python from "../components/icons/Python.astro";
+
+const education: Array<{
+  title: string;
+  institution: string;
+  period: string;
+  description?: string;
+}> = [
+  {
+    title: "Bachillerato en Ingeniería Informática",
+    institution: "Universidad Estatal a Distancia de Costa Rica",
+    period: "Sept. 2024 — Jun. 2027",
+    description: "En curso.",
+  },
+  {
+    title: "Diplomado en Informática",
+    institution: "Universidad Estatal a Distancia de Costa Rica",
+    period: "Ene. 2023 — Ago. 2024",
+    description: "Finalizado con distinción de honor.",
+  },
+];
+
+const certifications: Array<{
+  name: string;
+  issuer: string;
+  url?: string;
+  Icon: typeof AWS;
+}> = [
+  { name: "AWS Certified Cloud Practitioner", issuer: "Amazon Web Services", url: "https://www.credly.com/badges/460a64db-74a5-4d90-abd8-82ee548d23aa/public_url", Icon: AWS },
+  { name: "Google Cloud Computing Foundations", issuer: "Google Cloud", Icon: GoogleCloud },
+  { name: "Artificial Intelligence Fundamentals", issuer: "IBM SkillsBuild", url: "https://www.credly.com/badges/59aae54b-8c24-4aa1-805b-3cb60b6626cc/public_url", Icon: IBM },
+  { name: "Python Essentials 2", issuer: "Cisco Networking Academy", url: "https://www.credly.com/badges/7869e185-a592-4435-b4d7-6994eeceb4ff/public_url", Icon: Python },
+  { name: "Scrum Foundation Professional Certification", issuer: "CertiProf", url: "https://www.credly.com/badges/1d6a93de-8ea2-4434-a595-8869e3ae1490/public_url", Icon: Certificate },
+];
+
+const languages = [
+  { name: "Español", level: "Nativo" },
+  { name: "Inglés", level: "A2+ / B1" },
+];
+
+const strengths = [
+  "Resolución de problemas",
+  "Pensamiento analítico",
+  "Aprendizaje rápido",
+  "Comunicación técnica",
+  "Adaptabilidad",
+  "Gestión del tiempo",
+  "Atención al detalle",
+  "Trabajo en equipo",
+];
+
+const areas = ["Desarrollo de software", "Cloud", "Inteligencia artificial", "Automatización", "Soporte TI"];
+---
+
+<Layout title="Sobre mí — Kendall Calderón">
+  <main class="mx-auto w-full max-w-5xl flex-1 px-6 pb-24 pt-3" data-about-page>
+    <header class="grid gap-8 border-b border-zinc-800/80 pb-12 md:grid-cols-[auto_1fr] md:items-center md:gap-10">
+      <div class="relative mx-auto md:mx-0">
+        <div class="pointer-events-none absolute inset-0 -z-10 translate-y-4 rounded-full bg-sky-400/10 blur-2xl"></div>
+        <Image
+          src={fotoKendall}
+          alt="Kendall Calderón Burgos"
+          width={176}
+          height={176}
+          class="size-36 rounded-full object-cover sm:size-44"
+          loading="eager"
+        />
+      </div>
+
+      <div class="text-center md:text-left">
+        <p class="font-mono text-xs font-medium uppercase tracking-[0.18em] text-sky-400">Perfil profesional</p>
+        <h1 class="mt-3 text-4xl font-bold tracking-tight text-white sm:text-5xl">Kendall Calderón Burgos</h1>
+        <p class="mt-3 text-lg text-zinc-300">Desarrollador de software · Cloud Computing · IA aplicada</p>
+        <p class="mt-5 max-w-2xl text-sm leading-7 text-zinc-400 sm:text-base">
+          Profesional de TI con experiencia en soporte técnico y mentoría en programación, actualmente finalizando Ingeniería Informática. Desarrollo proyectos de software y cloud, utilizando inteligencia artificial como herramienta para investigar, automatizar y resolver problemas con mayor eficiencia.
+        </p>
+
+        <div class="mt-6 flex flex-wrap justify-start gap-x-5 gap-y-2 text-sm text-zinc-500">
+          <span class="inline-flex items-center gap-2">
+            <svg class="size-4 shrink-0 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></svg>
+            San Ramón, Alajuela, Costa Rica
+          </span>
+          <a href="mailto:kendallcr2012@gmail.com" class="transition-colors hover:text-sky-400">kendallcr2012@gmail.com</a>
+          <a href="tel:+50684919253" class="transition-colors hover:text-sky-400">+506 8491 9253</a>
+          <a href="https://www.linkedin.com/in/kendallcal/" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-sky-400">LinkedIn</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-16">
+      <div class="space-y-14">
+        <section aria-labelledby="about-profile-title">
+          <p class="section-label">01 · Perfil</p>
+          <h2 id="about-profile-title" class="section-title">Sobre mí</h2>
+          <div class="mt-5 space-y-4 text-base leading-8 text-zinc-400">
+            <p>
+              Me interesa crear soluciones tecnológicas que respondan a necesidades concretas, con una estructura clara y decisiones técnicas bien justificadas. Mi recorrido combina proyectos propios, soporte TI y mentoría académica en programación.
+            </p>
+            <p>
+              Estas experiencias han fortalecido mi capacidad para aprender con rapidez, analizar problemas y explicar conceptos técnicos de manera sencilla. Al abordar un proyecto, procuro comprender primero la necesidad y después construir una solución práctica y mantenible.
+            </p>
+          </div>
+        </section>
+
+        <section aria-labelledby="about-education-title">
+          <p class="section-label">02 · Trayectoria</p>
+          <h2 id="about-education-title" class="section-title">Educación</h2>
+          <div class="mt-6 divide-y divide-zinc-800/80 border-y border-zinc-800/80">
+              {education.map((item) => (
+                <article class="grid gap-2 py-5 sm:grid-cols-[1fr_auto] sm:gap-6">
+                  <div>
+                    <h3 class="font-semibold text-zinc-100">{item.title}</h3>
+                    <p class="mt-1 text-sm text-zinc-400">{item.institution}</p>
+                    {item.description && <p class="mt-3 text-sm leading-6 text-zinc-500">{item.description}</p>}
+                  </div>
+                  <p class="font-mono text-xs text-zinc-600">{item.period}</p>
+                </article>
+              ))}
+          </div>
+        </section>
+
+        <section aria-labelledby="about-certifications-title">
+          <p class="section-label">03 · Aprendizaje continuo</p>
+          <h2 id="about-certifications-title" class="section-title">Certificaciones</h2>
+          <ul class="mt-6 divide-y divide-zinc-800/80 border-y border-zinc-800/80">
+              {certifications.map(({ name, issuer, url, Icon }) => (
+                <li class="flex flex-wrap items-center justify-between gap-4 py-4">
+                  <div class="flex items-center gap-4">
+                    <span class="flex size-10 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/60 p-2 text-sky-400 [&>svg]:max-h-full [&>svg]:w-full">
+                      <Icon />
+                    </span>
+                    <div>
+                      <p class="font-medium text-zinc-200">{name}</p>
+                      <p class="mt-1 text-sm text-zinc-500">{issuer}</p>
+                    </div>
+                  </div>
+                  {url && (
+                    <a href={url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-500 transition-colors hover:text-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60">
+                      Ver credencial
+                      <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5-9 9M19 14v3a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3" /></svg>
+                    </a>
+                  )}
+                </li>
+              ))}
+          </ul>
+        </section>
+      </div>
+
+      <aside class="space-y-10 lg:border-l lg:border-zinc-800/80 lg:pl-8">
+        <section aria-labelledby="about-details-title">
+          <h2 id="about-details-title" class="sidebar-title">Información</h2>
+          <dl class="mt-4 space-y-4 text-sm">
+            <div>
+              <dt class="text-zinc-600">Nombre completo</dt>
+              <dd class="mt-1 text-zinc-300">Kendall Calderón Burgos</dd>
+            </div>
+            <div>
+              <dt class="text-zinc-600">Ubicación</dt>
+              <dd class="mt-1 text-zinc-300">San Ramón, Alajuela, Costa Rica</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section aria-labelledby="about-languages-title">
+          <h2 id="about-languages-title" class="sidebar-title">Idiomas</h2>
+          <ul class="mt-4 space-y-3">
+              {languages.map((language) => (
+                <li class="flex items-center justify-between gap-4 text-sm">
+                  <span class="text-zinc-300">{language.name}</span>
+                  <span class="text-zinc-600">{language.level}</span>
+                </li>
+              ))}
+          </ul>
+        </section>
+
+        <section aria-labelledby="about-strengths-title">
+          <h2 id="about-strengths-title" class="sidebar-title">Fortalezas</h2>
+          <ul class="mt-4 space-y-2.5">
+            {strengths.map((strength) => (
+              <li class="flex items-center gap-2.5 text-sm text-zinc-400">
+                <span class="size-1 rounded-full bg-sky-400" aria-hidden="true"></span>
+                {strength}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section aria-labelledby="about-areas-title">
+          <h2 id="about-areas-title" class="sidebar-title">Áreas de interés</h2>
+          <div class="mt-4 flex flex-col items-start gap-2">
+            {areas.map((area) => (
+              <span class="rounded-full border border-zinc-800 px-3 py-1.5 text-xs text-zinc-500">{area}</span>
+            ))}
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <section class="print-hidden mt-16 border-t border-zinc-800/80 pt-10 text-center" aria-labelledby="about-cv-title">
+      <p class="font-mono text-xs uppercase tracking-[0.16em] text-zinc-600">Currículum</p>
+      <h2 id="about-cv-title" class="mt-3 text-2xl font-semibold text-white">Currículum completo</h2>
+      <p class="mx-auto mt-3 max-w-xl text-sm leading-6 text-zinc-500">
+        Descargá la versión completa en PDF.
+      </p>
+      <a
+        href="/cv-kendall-calderon.pdf"
+        download
+        data-download-cv
+        class="mt-6 inline-flex h-11 items-center gap-2.5 rounded-full border border-sky-400/30 bg-sky-400/10 px-6 text-sm font-semibold text-sky-300 transition-all duration-300 hover:border-sky-400 hover:bg-sky-400 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-[0.97] motion-reduce:transition-none"
+      >
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15V3m5 7-5 5-5-5M5 21h14a2 2 0 0 0 2-2v-4M3 15v4a2 2 0 0 0 2 2" /></svg>
+        Descargar CV
+      </a>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .section-label {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(56 189 248);
+  }
+
+  .section-title {
+    margin-top: 0.6rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: white;
+  }
+
+  .sidebar-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgb(244 244 245);
+  }
+
+  .empty-state {
+    margin-top: 1.5rem;
+    border-block: 1px solid rgb(39 39 42 / 0.8);
+    padding-block: 1.25rem;
+    font-size: 0.875rem;
+    color: rgb(82 82 91);
+  }
+
+  @media print {
+    :global(body) {
+      background: white !important;
+      color: #18181b !important;
+    }
+
+    :global(body > header),
+    :global(body > footer),
+    :global(#mobile-menu),
+    :global(body > div[aria-hidden="true"]),
+    .print-hidden {
+      display: none !important;
+    }
+
+    :global([data-about-page]) {
+      max-width: none;
+      padding: 0;
+    }
+  }
+</style>

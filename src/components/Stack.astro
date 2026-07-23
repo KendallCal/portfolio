@@ -1,0 +1,479 @@
+---
+import { technologies } from "../data/technologies";
+
+const iconModules = import.meta.glob<{ default: any }>("./icons/*.astro", { eager: true });
+
+const stack = technologies.map((item) => {
+  const iconModule = iconModules[`./icons/${item.icon}.astro`];
+
+  if (!iconModule) throw new Error(`Technology icon not found: ${item.icon}`);
+
+  return { ...item, Icon: iconModule.default };
+});
+
+// Color de marca por tecnología, usado por el glow que sigue al cursor.
+// Si no reconozco el nombre, cae al celeste de acento por defecto.
+const techColors: Record<string, string> = {
+  nextjs: "ffffff",
+  typescript: "3178c6",
+  flutter: "54c5f8",
+  python: "3776ab",
+  github: "ffffff",
+  fastapi: "009688",
+  postgresql: "4169e1",
+  supabase: "3ecf8e",
+  aws: "ff9900",
+  react: "61dafb",
+  tailwindcss: "38bdf8",
+  astro: "ff5d01",
+  nodejs: "5fa04e",
+  docker: "2496ed",
+  git: "f05032",
+};
+
+function colorFor(name: string) {
+  const key = name.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return techColors[key] ?? "38bdf8";
+}
+---
+
+<section class="stack" id="stack" aria-labelledby="stack-title">
+  <header class="stack__header">
+    <h2 id="stack-title">Tecnologías</h2>
+    <p>Una selección de herramientas y tecnologías que utilizo en mis proyectos para explorar ideas, resolver problemas y experimentar en distintas áreas de la tecnología.</p>
+  </header>
+
+  <div class="technology-cloud">
+    <div class="technology-cloud__glow" aria-hidden="true"></div>
+    <svg class="technology-links" aria-hidden="true"></svg>
+
+    <ul class="technology-list" aria-label="Tecnologías y herramientas">
+      {stack.map(({ name, Icon, size, position }) => (
+        <li
+          class={`technology technology--${size}`}
+          data-size={size}
+          data-color={colorFor(name)}
+          style={`--x: ${position.x}%; --y: ${position.y}%;`}
+        >
+          <div class="technology__motion">
+            <span class="technology__icon" aria-hidden="true"><Icon /></span>
+            <span class="technology__name">{name}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .stack {
+    width: 100%;
+    scroll-margin-top: 6rem;
+  }
+
+  .stack__header {
+    margin-bottom: 2.5rem;
+  }
+
+  h2 {
+    color: #fafafa;
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 2.25rem;
+  }
+
+  p {
+    margin-top: 0.5rem;
+    color: #71717a;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  /* Caja contenedora: fondo, borde, textura de puntos y viñeta de profundidad. */
+  .technology-cloud {
+    --glow-r: 56;
+    --glow-g: 189;
+    --glow-b: 248;
+    --mx: 50%;
+    --my: 50%;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 25rem;
+    border: 1px solid rgb(39 39 42 / 0.78);
+    border-radius: 1.25rem;
+    background:
+      radial-gradient(circle at 20% 24%, rgb(14 165 233 / 0.045), transparent 24%),
+      radial-gradient(circle at 79% 70%, rgb(139 92 246 / 0.04), transparent 25%),
+      #08080b;
+    isolation: isolate;
+  }
+
+  .technology-cloud::before {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    background-image: radial-gradient(rgb(113 113 122 / 0.22) 0.6px, transparent 0.6px);
+    background-size: 28px 28px;
+    content: "";
+    mask-image: radial-gradient(ellipse at center, black, transparent 76%);
+  }
+
+  /* Viñeta: oscurece los bordes para simular profundidad de campo,
+     como si el "acuario" tuviera un centro de foco. */
+  .technology-cloud::after {
+    position: absolute;
+    z-index: 4;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 52%, rgb(3 3 5 / 0.65) 100%);
+    content: "";
+    pointer-events: none;
+  }
+
+  /* Glow que sigue al cursor y toma el color de marca del ícono más cercano. */
+  .technology-cloud__glow {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    opacity: 0;
+    background: radial-gradient(
+      circle at var(--mx) var(--my),
+      rgb(var(--glow-r) var(--glow-g) var(--glow-b) / 0.16),
+      transparent 40%
+    );
+    transition: opacity 400ms ease;
+    pointer-events: none;
+  }
+
+  .technology-cloud.is-active .technology-cloud__glow {
+    opacity: 1;
+  }
+
+  /* Líneas de constelación entre íconos cercanos. */
+  .technology-links {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .technology-list {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .technology {
+    --icon-size: 2.5rem;
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    width: 6.5rem;
+    transform: translate(-50%, -50%);
+  }
+
+  .technology--small {
+    --icon-size: 1.7rem;
+    opacity: 0.55;
+  }
+
+  .technology--small .technology__icon {
+    filter: blur(0.3px) drop-shadow(0 4px 10px rgb(0 0 0 / 0.4));
+  }
+
+  .technology--large {
+    --icon-size: 3.4rem;
+  }
+
+  .technology--large .technology__icon {
+    filter: drop-shadow(0 0 10px rgb(56 189 248 / 0.12)) drop-shadow(0 6px 14px rgb(0 0 0 / 0.45));
+  }
+
+  .technology__motion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    will-change: transform;
+  }
+
+  .technology__icon {
+    display: flex;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 6px 14px rgb(0 0 0 / 0.45));
+    transition: transform 220ms ease, filter 220ms ease;
+  }
+
+  .technology__icon :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .technology__name {
+    color: #d4d4d8;
+    font-size: 0.65rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    transition: color 220ms ease;
+  }
+
+  .technology:hover {
+    z-index: 2;
+    opacity: 1;
+  }
+
+  .technology:hover .technology__icon {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 18px rgb(56 189 248 / 0.5)) drop-shadow(0 6px 14px rgb(0 0 0 / 0.45));
+  }
+
+  .technology:hover .technology__name {
+    color: #7dd3fc;
+  }
+
+  @media (max-width: 559px) {
+    .technology-cloud {
+      height: auto;
+      min-height: 27rem;
+    }
+
+    .technology-cloud__glow,
+    .technology-links,
+    .technology-cloud::after {
+      display: none;
+    }
+
+    .technology-list {
+      position: static;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.8rem 0.2rem;
+      padding: 2rem 0.5rem;
+    }
+
+    .technology {
+      position: static;
+      width: auto;
+      transform: none;
+    }
+
+    .technology__motion {
+      transform: none !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .technology__icon {
+      transition: none;
+    }
+
+    .technology__motion {
+      transform: none !important;
+    }
+
+    .technology-cloud__glow,
+    .technology-links {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Movimiento orgánico ("bacteria") + líneas de constelación entre íconos
+  // cercanos + glow que toma el color de marca del ícono más próximo al cursor.
+  const cloud = document.querySelector<HTMLElement>(".technology-cloud");
+  const svg = document.querySelector<SVGSVGElement>(".technology-links");
+  const items = document.querySelectorAll<HTMLLIElement>(".technology");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isMobileLayout = window.matchMedia("(max-width: 559px)").matches;
+
+  function hexToRgb(hex: string): [number, number, number] {
+    const clean = hex.replace("#", "");
+    const num = parseInt(clean, 16);
+    return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+  }
+
+  if (cloud && svg && items.length && !reduceMotion && !isMobileLayout) {
+    interface Particle {
+      motion: HTMLElement;
+      ox: number;
+      oy: number;
+      vx: number;
+      vy: number;
+      jitter: number;
+      spring: number;
+      color: [number, number, number];
+    }
+
+    const profileBySize: Record<string, { jitter: number; spring: number }> = {
+      small: { jitter: 0.012, spring: 0.012 },
+      medium: { jitter: 0.02, spring: 0.008 },
+      large: { jitter: 0.03, spring: 0.006 },
+    };
+
+    const DAMPING = 0.965;
+    const REPEL_RADIUS = 110;
+    const REPEL_STRENGTH = 1.6;
+    const CONNECT_RADIUS = 170; // distancia máxima para dibujar una línea entre dos íconos
+    const GLOW_RADIUS = 260; // distancia máxima para que un ícono "preste" su color al glow
+    const DEFAULT_COLOR: [number, number, number] = [56, 189, 248];
+
+    const particles: Particle[] = [];
+    items.forEach((li) => {
+      const motion = li.querySelector<HTMLElement>(".technology__motion");
+      if (!motion) return;
+      const profile = profileBySize[li.dataset.size ?? "medium"] ?? profileBySize.medium;
+      particles.push({
+        motion,
+        ox: 0,
+        oy: 0,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        jitter: profile.jitter,
+        spring: profile.spring,
+        color: hexToRgb(li.dataset.color ?? "38bdf8"),
+      });
+    });
+
+    // Una línea SVG por cada par posible de íconos, creada una sola vez.
+    const NS = "http://www.w3.org/2000/svg";
+    const pairs: [number, number][] = [];
+    const lineEls: SVGLineElement[] = [];
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        pairs.push([i, j]);
+        const line = document.createElementNS(NS, "line");
+        line.setAttribute("stroke", "rgb(148 163 184)");
+        line.setAttribute("stroke-width", "1");
+        line.setAttribute("stroke-opacity", "0");
+        svg.appendChild(line);
+        lineEls.push(line);
+      }
+    }
+
+    let mouseX = -9999;
+    let mouseY = -9999;
+    let currentColor: [number, number, number] = [...DEFAULT_COLOR];
+
+    cloud.addEventListener("mousemove", (e) => {
+      const rect = cloud.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+      cloud.classList.add("is-active");
+    });
+
+    cloud.addEventListener("mouseleave", () => {
+      mouseX = -9999;
+      mouseY = -9999;
+      cloud.classList.remove("is-active");
+    });
+
+    let raf = 0;
+
+    function tick() {
+      if (document.hidden) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+
+      const bounds = cloud!.getBoundingClientRect();
+
+      // Fase de lectura: posición actual de cada ícono (evita layout thrashing).
+      const centers = particles.map((p) => {
+        const r = p.motion.getBoundingClientRect();
+        return {
+          x: r.left + r.width / 2 - bounds.left,
+          y: r.top + r.height / 2 - bounds.top,
+        };
+      });
+
+      // Fase de cálculo + escritura: movimiento de cada ícono.
+      particles.forEach((p, i) => {
+        p.vx += (Math.random() - 0.5) * p.jitter;
+        p.vy += (Math.random() - 0.5) * p.jitter;
+        p.vx += -p.ox * p.spring;
+        p.vy += -p.oy * p.spring;
+
+        const dx = centers[i].x - mouseX;
+        const dy = centers[i].y - mouseY;
+        const dist = Math.hypot(dx, dy);
+        if (dist < REPEL_RADIUS) {
+          const force = ((REPEL_RADIUS - dist) / REPEL_RADIUS) * REPEL_STRENGTH;
+          p.vx += (dx / (dist || 1)) * force;
+          p.vy += (dy / (dist || 1)) * force;
+        }
+
+        p.vx *= DAMPING;
+        p.vy *= DAMPING;
+        p.ox += p.vx;
+        p.oy += p.vy;
+
+        p.motion.style.transform = `translate(${p.ox.toFixed(1)}px, ${p.oy.toFixed(1)}px)`;
+      });
+
+      // Líneas de constelación: se redibujan según la distancia actual entre pares.
+      pairs.forEach(([i, j], idx) => {
+        const a = centers[i];
+        const b = centers[j];
+        const dist = Math.hypot(a.x - b.x, a.y - b.y);
+        const line = lineEls[idx];
+        if (dist < CONNECT_RADIUS) {
+          const strength = 1 - dist / CONNECT_RADIUS;
+          line.setAttribute("x1", String(a.x));
+          line.setAttribute("y1", String(a.y));
+          line.setAttribute("x2", String(b.x));
+          line.setAttribute("y2", String(b.y));
+          line.setAttribute("stroke-opacity", (strength * 0.35).toFixed(2));
+        } else {
+          line.setAttribute("stroke-opacity", "0");
+        }
+      });
+
+      // Glow: color del ícono más cercano al cursor, mezclado gradualmente.
+      let nearestIdx = -1;
+      let nearestDist = Infinity;
+      centers.forEach((c, i) => {
+        const d = Math.hypot(c.x - mouseX, c.y - mouseY);
+        if (d < nearestDist) {
+          nearestDist = d;
+          nearestIdx = i;
+        }
+      });
+
+      const target =
+        mouseX > -9000 && nearestIdx !== -1 && nearestDist < GLOW_RADIUS
+          ? particles[nearestIdx].color
+          : DEFAULT_COLOR;
+
+      currentColor = currentColor.map((c, k) => c + (target[k] - c) * 0.07) as [
+        number,
+        number,
+        number,
+      ];
+
+      cloud!.style.setProperty("--glow-r", String(Math.round(currentColor[0])));
+      cloud!.style.setProperty("--glow-g", String(Math.round(currentColor[1])));
+      cloud!.style.setProperty("--glow-b", String(Math.round(currentColor[2])));
+
+      if (mouseX > -9000) {
+        cloud!.style.setProperty("--mx", `${((mouseX / bounds.width) * 100).toFixed(1)}%`);
+        cloud!.style.setProperty("--my", `${((mouseY / bounds.height) * 100).toFixed(1)}%`);
+      }
+
+      raf = requestAnimationFrame(tick);
+    }
+
+    raf = requestAnimationFrame(tick);
+
+    document.addEventListener("astro:before-swap", () => cancelAnimationFrame(raf));
+  }
+</script>

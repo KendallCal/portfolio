@@ -1,0 +1,65 @@
+---
+// src/components/projects/ProjectGrid.astro
+import { projects } from "../../data/projects";
+import ProjectCard from "./ProjectCard.astro";
+
+interface Props {
+  variant?: "featured" | "all";
+  title?: string;
+  description?: string;
+  headingLevel?: "h1" | "h2";
+  showAllLink?: boolean;
+}
+
+const {
+  variant = "featured",
+  title = "Proyectos",
+  description = "Una selección de proyectos que reúne lo que más disfruto del desarrollo: resolver problemas reales y convertir buenas ideas en productos bien construidos.",
+  headingLevel = "h2",
+  showAllLink = variant === "featured",
+} = Astro.props;
+
+const visibleProjects = variant === "all"
+  ? projects
+  : projects.filter((project) => project.featured);
+
+const Heading = headingLevel;
+---
+
+<section class="w-full scroll-mt-24" id="projects">
+  <Heading class:list={["font-bold text-white", headingLevel === "h1" ? "text-center text-4xl sm:text-5xl" : "text-3xl"]}>
+    {title}
+  </Heading>
+  <p class:list={["mt-2 leading-relaxed text-zinc-400", headingLevel === "h1" && "w-full text-center text-base sm:text-lg"]}>
+    {description}
+  </p>
+
+  {visibleProjects.length === 0 ? (
+    <div class="mt-10 flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-700 bg-zinc-900/40 py-20 text-center">
+      <svg class="h-10 w-10 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+      </svg>
+      <p class="mt-4 text-sm text-zinc-600">Próximamente...</p>
+    </div>
+  ) : (
+    <div class:list={["mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2", variant === "all" && "lg:grid-cols-3"]}>
+      {visibleProjects.map((project) => (
+        <ProjectCard project={project} />
+      ))}
+    </div>
+  )}
+
+  {showAllLink && projects.length > 0 && (
+    <div class="mt-8 flex justify-center">
+      <a
+        href="/projects"
+        class="group inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:text-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50"
+      >
+        Ver todos los proyectos
+        <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transform-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-6-6 6 6-6 6" />
+        </svg>
+      </a>
+    </div>
+  )}
+</section>

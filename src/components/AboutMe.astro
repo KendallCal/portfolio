@@ -1,0 +1,155 @@
+---
+import { Image } from "astro:assets";
+import fotoKendall from "../assets/Foto.png";
+
+const qualities = [
+  {
+    label: "Resolución de problemas",
+    icon: "M13 2 3 14h9l-1 8 10-12h-9l1-8z",
+  },
+  {
+    label: "Pensamiento analítico",
+    icon: "M22 12h-4l-3 9L9 3l-3 9H2",
+  },
+  {
+    label: "Criterio técnico",
+    icon: "shield",
+  },
+];
+---
+
+<section class="w-full scroll-mt-24" id="sobre-mi">
+  <div class="mb-10">
+
+    <h2 class="text-3xl font-bold tracking-tight text-white">Sobre mí</h2>
+  </div>
+
+  <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-14">
+<div class="shrink-0">
+  <div class="relative">
+    <!-- Glow azul detrás, desplazado hacia abajo -->
+    <div
+      class="
+        pointer-events-none
+        absolute
+        inset-0
+        -z-10
+        translate-y-6
+        rounded-full
+        bg-sky-400/10
+        blur-2xl
+      "
+    ></div>
+
+    <Image
+      src={fotoKendall}
+      alt="Kendall Calderón"
+      width={180}
+      height={180}
+      class="
+        h-36
+        w-36
+        rounded-full
+        object-cover
+        transition-transform
+        duration-500
+        hover:scale-[1.03]
+        motion-reduce:transition-none
+        motion-reduce:hover:scale-100
+      "
+    />
+  </div>
+</div>
+
+    <div class="space-y-6">
+      <div class="space-y-4 text-base leading-relaxed text-zinc-300">
+        <p>
+          Desarrollador de software y profesional de TI, enfocado en
+          construir <span class="text-white">soluciones web, cloud y de
+          inteligencia artificial</span> claras, eficientes y bien pensadas.
+        </p>
+        <p>
+          Mi paso por soporte técnico y mentoría en programación me dio una
+          mirada analítica: entender el problema real antes de escribir una
+          línea de código, y explicar el porqué de cada decisión técnica.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-x-6 gap-y-3">
+        {qualities.map((quality) => (
+          <div class="flex items-center gap-2 text-sm text-zinc-400">
+            {quality.icon === "circle" ? (
+              <svg class="size-4 shrink-0 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <circle cx="12" cy="12" r="4.5" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
+              </svg>
+            ) : quality.icon === "shield" ? (
+              <svg class="size-4 shrink-0 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-3.5 7-9V6l-7-3-7 3v6c0 5.5 7 9 7 9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="m9.5 12 1.8 1.8 3.2-3.6" />
+              </svg>
+            ) : (
+              <svg class="size-4 shrink-0 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d={quality.icon} />
+              </svg>
+            )}
+            <span class="font-medium text-zinc-300">{quality.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-10 flex justify-center">
+    <a
+      href="/about"
+      aria-label="Ver perfil completo de Kendall"
+      class="
+        group
+        inline-flex
+        h-11
+        items-center
+        gap-2.5
+        rounded-full
+        border border-sky-400/30
+        bg-sky-400/10
+        px-6
+        text-sm
+        font-semibold
+        text-sky-300
+        shadow-sm
+        shadow-black/20
+        transition-all
+        duration-300
+        ease-out
+        hover:border-sky-400
+        hover:bg-sky-400
+        hover:text-zinc-950
+        hover:shadow-lg
+        hover:shadow-sky-400/25
+        focus-visible:outline-none
+        focus-visible:ring-2
+        focus-visible:ring-sky-400
+        focus-visible:ring-offset-2
+        focus-visible:ring-offset-zinc-950
+        active:scale-[0.97]
+        motion-reduce:transition-none
+        motion-reduce:active:scale-100
+      "
+    >
+      <svg
+        class="size-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="8" r="4" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 21a7.5 7.5 0 0 1 15 0" />
+      </svg>
+      Ver perfil completo
+    </a>
+  </div>
+</section>

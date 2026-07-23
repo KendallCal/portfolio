@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+/* Fuente variable — se importa una sola vez, acá, no en el Layout */
+@import "@fontsource-variable/onest";
+
+:root {
+  /* Registra Onest como la fuente "sans" del proyecto.
+     Cualquier clase font-sans (incluida la que Tailwind aplica
+     por defecto al body) usará esto automáticamente. */
+  --font-sans: "Onest Variable", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  scrollbar-color: #38bdf8 transparent;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: #38bdf8;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7dd3fc;
+  background-clip: padding-box;
+}
+
+/* ============================================================
+   Signature element: terminal / prompt typewriter
+   Usado en el Hero para el rol ("Ingeniero Informático" → ...)
+   ============================================================ */
+@keyframes blink-cursor {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.terminal-cursor {
+  animation: blink-cursor 1s step-end infinite;
+}
+
+/* Respeta a usuarios que prefieren menos movimiento:
+   el cursor deja de titilar y el texto queda estático. */
+@media (prefers-reduced-motion: reduce) {
+  .terminal-cursor {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* Fade-in escalonado para el hero al cargar */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   Botón flotante "Proyectos": rebote suave, tipo scroll-hint
+   ============================================================ */
+/* ============================================================
+   Botón "Proyectos"
+   ============================================================ */
+
+@keyframes bounce-scroll {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+.bounce-scroll {
+  animation: bounce-scroll 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bounce-scroll {
+    animation: none;
+  }
+}

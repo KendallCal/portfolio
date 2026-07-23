@@ -1,0 +1,51 @@
+---
+// src/components/projects/TechBadge.astro
+import type { Tech } from "../../data/projects";
+import AWSIcon from "../icons/AWS.astro";
+import FastAPIIcon from "../icons/FastAPI.astro";
+import FlutterIcon from "../icons/Flutter.astro";
+import NextJSIcon from "../icons/NextJS.astro";
+import PythonIcon from "../icons/Python.astro";
+import PostgreSQLIcon from "../icons/PostgreSQL.astro";
+import SupabaseIcon from "../icons/Supabase.astro";
+import TypeScriptIcon from "../icons/TypeScript.astro";
+
+interface Props {
+  tech: Tech;
+}
+
+const { tech } = Astro.props;
+const iconMap = {
+  aws: AWSIcon,
+  fastapi: FastAPIIcon,
+  flutter: FlutterIcon,
+  nextjs: NextJSIcon,
+  python: PythonIcon,
+  postgresql: PostgreSQLIcon,
+  supabase: SupabaseIcon,
+  typescript: TypeScriptIcon,
+} as const;
+
+const normalizedIcon = tech.icon.toLowerCase().replace(/[^a-z0-9]/g, "");
+const TechIcon = iconMap[normalizedIcon as keyof typeof iconMap];
+---
+
+{
+  TechIcon ? (
+    <span
+      class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/80 text-zinc-300 transition-colors duration-200 hover:border-sky-400/60 hover:text-sky-400 [&_svg]:h-5 [&_svg]:w-5"
+      title={tech.name}
+      aria-label={tech.name}
+    >
+      <TechIcon />
+    </span>
+  ) : (
+    <span
+      class="inline-flex h-9 min-w-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/80 px-2 text-[10px] font-medium text-zinc-300 transition-colors duration-200 hover:border-sky-400/60 hover:text-sky-400"
+      title={tech.name}
+      aria-label={tech.name}
+    >
+      {tech.name.slice(0, 2).toUpperCase()}
+    </span>
+  )
+}
