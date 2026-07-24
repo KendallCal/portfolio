@@ -33,13 +33,13 @@ const experiences = [
 ---
 
 <section class="w-full scroll-mt-24" id="experience">
-  <h2 class="text-3xl font-bold text-white">Experiencia</h2>
+  <h2 class="text-2xl font-bold text-white sm:text-3xl">Experiencia</h2>
 
-  <article class="mt-10 px-2">
+  <article class="mt-8 px-3 sm:mt-10 sm:px-2">
     <ul class="relative border-l border-zinc-700">
       {
         experiences.map((exp) => (
-          <li class="mb-8 ml-6 last:mb-0 md:mb-6">
+          <li class="mb-8 ml-7 last:mb-0 sm:ml-6 md:mb-6">
             {/* Dot */}
             <span class="absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-700">
               <svg
@@ -59,10 +59,10 @@ const experiences = [
             </span>
 
             {/* Role + Company */}
-            <h3 class="mb-1 flex flex-wrap items-center gap-2 text-lg leading-6 font-semibold text-sky-400">
-              {exp.role}
-              <span class="font-normal text-white">-</span>
-              <span class="text-sm font-semibold text-orange-300">
+            <h3 class="mb-1 flex flex-col items-start gap-0.5 text-base leading-6 font-semibold text-sky-400 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-2 sm:gap-y-1 sm:text-lg">
+              <span>{exp.role}</span>
+              <span class="hidden font-normal text-white sm:inline">-</span>
+              <span class="block text-sm font-semibold text-orange-300">
                 {exp.company}
               </span>
             </h3>
@@ -76,7 +76,7 @@ const experiences = [
             </div>
 
             {/* Description */}
-            <p class="max-w-2xl text-pretty text-base leading-relaxed text-zinc-300">
+            <p class="max-w-2xl text-pretty text-sm leading-7 text-zinc-300 sm:text-base sm:leading-relaxed">
               {exp.description}
             </p>
           </li>

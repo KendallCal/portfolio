@@ -19,13 +19,13 @@ const qualities = [
 ---
 
 <section class="w-full scroll-mt-24" id="sobre-mi">
-  <div class="mb-10">
+  <div class="mb-7 sm:mb-10">
 
-    <h2 class="text-3xl font-bold tracking-tight text-white">Sobre mí</h2>
+    <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Sobre mí</h2>
   </div>
 
   <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-14">
-<div class="shrink-0">
+<div class="shrink-0 self-center lg:self-auto">
   <div class="relative">
     <!-- Glow azul detrás, desplazado hacia abajo -->
     <div
@@ -75,9 +75,9 @@ const qualities = [
         </p>
       </div>
 
-      <div class="flex flex-nowrap items-center gap-3 sm:gap-5">
+      <div class="hidden gap-2 sm:grid sm:grid-cols-3 sm:gap-3 lg:flex lg:flex-nowrap lg:items-center lg:gap-5">
         {qualities.map((quality, index) => (
-          <div class="group flex shrink-0 items-center gap-2 text-xs text-zinc-400 transition-colors duration-300 hover:text-zinc-200 sm:text-sm">
+          <div class="group flex min-h-11 items-center gap-2 text-sm text-zinc-400 transition-colors duration-300 hover:text-zinc-200 lg:shrink-0">
             <svg
               class="quality-icon size-[1.125rem] shrink-0"
               viewBox="0 0 24 24"
@@ -103,7 +103,7 @@ const qualities = [
     </div>
   </div>
 
-  <div class="mt-10 flex justify-center">
+  <div class="mt-6 flex justify-center sm:mt-10">
     <a
       href="/about"
       aria-label="Ver perfil completo de Kendall"

@@ -243,7 +243,6 @@ function colorFor(name: string) {
   @media (max-width: 559px) {
     .technology-cloud {
       height: auto;
-      min-height: 27rem;
     }
 
     .technology-cloud__glow,
@@ -255,19 +254,34 @@ function colorFor(name: string) {
     .technology-list {
       position: static;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1.8rem 0.2rem;
-      padding: 2rem 0.5rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.5rem 0.25rem;
+      padding: 1.75rem 0.5rem;
     }
 
     .technology {
+      --icon-size: 1.65rem;
       position: static;
       width: auto;
       transform: none;
+      opacity: 1;
+    }
+
+    .technology--small .technology__icon,
+    .technology--large .technology__icon,
+    .technology__icon {
+      filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.38));
     }
 
     .technology__motion {
       transform: none !important;
+    }
+
+    .technology__name {
+      max-width: 100%;
+      overflow: hidden;
+      font-size: 0.6rem;
+      text-overflow: ellipsis;
     }
   }
 

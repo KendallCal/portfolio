@@ -2,16 +2,23 @@
 const navLinks = [
   { label: "Proyectos", href: "/projects" },
   { label: "Experiencia", href: "/#experience" },
-  { label: "Sobre mí", href: "/#about" },
+  { label: "Sobre mí", href: "/about" },
   { label: "Contacto", href: "/contact" },
 ] as const;
 ---
 
 <footer class="w-full px-6 pb-5 pt-4">
   <div class="mx-auto flex min-h-14 max-w-6xl items-center justify-between rounded-xl border border-zinc-800/80 bg-transparent px-4">
-    <span class="text-sm font-normal text-zinc-300">Kendall Calderón</span>
+    <a
+      href="mailto:kendallcr2012@gmail.com"
+      class="text-sm font-normal text-zinc-300 transition-colors duration-200 hover:text-white sm:hidden"
+    >
+      kendallcr2012@gmail.com
+    </a>
 
-    <nav class="flex items-center gap-6" aria-label="Navegación del pie de página">
+    <span class="hidden text-sm font-normal text-zinc-300 sm:inline">Kendall Calderón</span>
+
+    <nav class="hidden items-center gap-6 sm:flex" aria-label="Navegación del pie de página">
       {navLinks.map((link) => (
         <a
           href={link.href}
@@ -31,15 +38,7 @@ const navLinks = [
     }
 
     footer > div {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: 0.8rem;
-      padding-block: 1rem;
-    }
-
-    nav {
-      flex-wrap: wrap;
-      gap: 0.65rem 1.25rem;
+      justify-content: center;
     }
   }
 </style>

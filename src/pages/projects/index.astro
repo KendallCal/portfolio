@@ -17,7 +17,7 @@ const categories = [...new Set(projects.map((project) => project.category))].map
 ---
 
 <Layout title="Proyectos — Kendall Calderón">
-  <main data-project-catalog class="mx-auto w-full max-w-6xl flex-1 px-6 pb-24 pt-3 sm:pt-5">
+  <main data-project-catalog class="mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-3 sm:px-6 sm:pb-24 sm:pt-5">
     <header class="mx-auto max-w-5xl text-center">
       <h1 class="projects-title text-3xl font-bold tracking-tight sm:text-4xl">
         Proyectos
@@ -30,9 +30,9 @@ const categories = [...new Set(projects.map((project) => project.category))].map
 
     {projects.length > 0 ? (
       <>
-        <div class="-mx-6 mt-8 overflow-x-auto px-6 sm:mx-0 sm:flex sm:justify-center sm:px-0">
+        <div class="mt-8 sm:flex sm:justify-center">
           <div
-            class="inline-flex min-w-max items-center gap-3"
+            class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:inline-flex sm:min-w-max sm:flex-nowrap"
             data-project-filters
             role="group"
             aria-label="Filtrar proyectos por categoría"

@@ -26,7 +26,7 @@ const hasControls = projects.length > 2;
           data-carousel-track
         >
           {projects.map((project) => (
-            <div class="w-full shrink-0 px-2.5 sm:w-1/2 sm:px-3">
+            <div class="w-full shrink-0 sm:w-1/2 sm:px-3">
               <ProjectCard project={project} />
             </div>
           ))}
@@ -35,7 +35,7 @@ const hasControls = projects.length > 2;
 
       <button
         type="button"
-        class="carousel-control absolute top-1/2 -left-8 z-40 -translate-y-1/2"
+        class="carousel-control absolute top-1/2 left-3 z-40 hidden -translate-y-1/2 sm:inline-flex sm:left-0 lg:-left-8"
         data-carousel-previous
         aria-label="Mostrar proyectos anteriores"
       >
@@ -46,7 +46,7 @@ const hasControls = projects.length > 2;
 
       <button
         type="button"
-        class="carousel-control absolute top-1/2 -right-8 z-40 -translate-y-1/2"
+        class="carousel-control absolute top-1/2 right-3 z-40 hidden -translate-y-1/2 sm:inline-flex sm:right-0 lg:-right-8"
         data-carousel-next
         aria-label="Mostrar proyectos siguientes"
       >
@@ -68,7 +68,6 @@ const hasControls = projects.length > 2;
   }
 
   .carousel-control {
-    display: inline-flex;
     width: 2.75rem;
     height: 4rem;
     align-items: center;
@@ -96,18 +95,6 @@ const hasControls = projects.length > 2;
     opacity: 0.25;
   }
 
-  @media (max-width: 639px) {
-    .carousel-control:first-of-type {
-      left: 0.75rem;
-      transform: translateY(-50%);
-    }
-
-    .carousel-control:last-of-type {
-      right: 0.75rem;
-      transform: translateY(-50%);
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     [data-carousel-track] {
       transition: none;
@@ -132,9 +119,13 @@ const hasControls = projects.length > 2;
         "[data-carousel-next]",
       );
 
-      if (!viewport || !track || !previous || !next) return;
+      if (!viewport || !track) return;
 
       let currentIndex = 0;
+      let autoplayTimer: number | undefined;
+      let touchStartX = 0;
+      let touchDeltaX = 0;
+      const AUTOPLAY_DELAY_MS = 5200;
 
       const visibleSlides = () =>
         window.matchMedia("(min-width: 640px)").matches ? 2 : 1;
@@ -146,24 +137,75 @@ const hasControls = projects.length > 2;
         const step = viewport.clientWidth / visible;
 
         track.style.transform = `translate3d(${-currentIndex * step}px, 0, 0)`;
-        previous.disabled = currentIndex === 0;
-        next.disabled = currentIndex === maxIndex;
+        if (previous) previous.disabled = currentIndex === 0;
+        if (next) next.disabled = currentIndex === maxIndex;
       };
 
-      previous.addEventListener("click", () => {
+      previous?.addEventListener("click", () => {
         currentIndex = Math.max(0, currentIndex - 1);
         update();
       });
 
-      next.addEventListener("click", () => {
+      next?.addEventListener("click", () => {
         const maxIndex = Math.max(0, slides.length - visibleSlides());
         currentIndex = Math.min(maxIndex, currentIndex + 1);
         update();
       });
 
+      const stopAutoplay = () => {
+        if (autoplayTimer !== undefined) window.clearInterval(autoplayTimer);
+        autoplayTimer = undefined;
+      };
+
+      const startAutoplay = () => {
+        stopAutoplay();
+        const isMobile = window.matchMedia("(max-width: 639px)").matches;
+        const reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        if (!isMobile || reduceMotion || slides.length < 2) return;
+
+        autoplayTimer = window.setInterval(() => {
+          currentIndex = (currentIndex + 1) % slides.length;
+          update();
+        }, AUTOPLAY_DELAY_MS);
+      };
+
+      viewport.addEventListener(
+        "touchstart",
+        (event) => {
+          touchStartX = event.touches[0]?.clientX ?? 0;
+          touchDeltaX = 0;
+          stopAutoplay();
+        },
+        { passive: true },
+      );
+
+      viewport.addEventListener(
+        "touchmove",
+        (event) => {
+          touchDeltaX = (event.touches[0]?.clientX ?? touchStartX) - touchStartX;
+        },
+        { passive: true },
+      );
+
+      viewport.addEventListener("touchend", () => {
+        if (Math.abs(touchDeltaX) >= 45) {
+          const maxIndex = Math.max(0, slides.length - visibleSlides());
+          currentIndex =
+            touchDeltaX < 0
+              ? Math.min(maxIndex, currentIndex + 1)
+              : Math.max(0, currentIndex - 1);
+          update();
+        }
+        startAutoplay();
+      });
+
       const resizeObserver = new ResizeObserver(update);
       resizeObserver.observe(viewport);
       update();
+      startAutoplay();
+      window.addEventListener("resize", startAutoplay);
     },
   );
 </script>

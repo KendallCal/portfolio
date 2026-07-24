@@ -61,8 +61,8 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
 ---
 
 <Layout title="Sobre mí — Kendall Calderón">
-  <main class="mx-auto w-full max-w-5xl flex-1 px-6 pb-20 pt-3" data-about-page>
-    <header class="grid gap-7 border-b border-zinc-800/80 pb-10 md:grid-cols-[auto_minmax(0,40rem)] md:items-center md:justify-center md:gap-9">
+  <main class="mx-auto w-full max-w-5xl flex-1 px-4 pb-14 pt-3 sm:px-6 sm:pb-20" data-about-page>
+    <header class="grid gap-6 border-b border-zinc-800/80 pb-8 sm:gap-7 sm:pb-10 md:grid-cols-[auto_minmax(0,40rem)] md:items-center md:justify-center md:gap-9">
       <div class="relative mx-auto md:mx-0">
         <div class="pointer-events-none absolute inset-0 -z-10 translate-y-4 rounded-full bg-sky-400/10 blur-2xl"></div>
         <Image
@@ -77,8 +77,8 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
 
       <div class="text-center md:text-left">
         <p class="font-mono text-xs font-medium uppercase tracking-[0.18em] text-sky-400">Perfil profesional</p>
-        <h1 class="mt-3 text-4xl font-bold tracking-tight text-white sm:text-5xl">Kendall Calderón Burgos</h1>
-        <p class="mt-3 flex flex-wrap items-center justify-center gap-x-2 text-lg text-zinc-300 md:justify-start">
+        <h1 class="mt-3 text-3xl font-bold tracking-tight text-white sm:text-5xl">Kendall Calderón Burgos</h1>
+        <p class="mt-3 flex flex-wrap items-center justify-center gap-x-2 text-base text-zinc-300 sm:text-lg md:justify-start">
           <span class="role-text">Desarrollador de software</span>
           <span class="font-mono text-sky-400" aria-hidden="true">/</span>
           <span class="role-text">Cloud Computing</span>
@@ -96,10 +96,10 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
     </header>
 
     <div class="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-14">
-      <div class="space-y-12">
-        <section aria-labelledby="about-introduction-title">
+      <div class="contents lg:block lg:space-y-12">
+        <section class="order-1" aria-labelledby="about-introduction-title">
           <h2 id="about-introduction-title" class="section-title !mt-0">Resumen</h2>
-          <div class="mt-5 space-y-4 text-base leading-8 text-zinc-400">
+          <div class="mt-5 space-y-4 text-sm leading-7 text-zinc-400 sm:text-base sm:leading-8">
             <p>
               Soy un profesional de tecnología con formación en Ingeniería Informática y una mirada amplia: me interesa entender el producto, las personas que lo usan y las decisiones técnicas que lo hacen posible. Encuentro motivación en los retos que exigen aprender rápido, pensar con claridad y construir con intención.
             </p>
@@ -109,9 +109,9 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
           </div>
         </section>
 
-        <section aria-labelledby="about-education-title">
+        <section class="order-2" aria-labelledby="about-education-title">
           <h2 id="about-education-title" class="section-title">Educación</h2>
-          <div class="mt-6 divide-y divide-zinc-800/80 border-y border-zinc-800/80">
+          <div class="mt-6 divide-y divide-zinc-800/80 border-t border-zinc-800/80 sm:border-y">
               {education.map((item) => (
                 <article class="grid gap-2 py-5 sm:grid-cols-[1fr_auto] sm:gap-6">
                   <div>
@@ -125,22 +125,20 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
           </div>
         </section>
 
-        <section aria-labelledby="about-certifications-title">
+        <section class="order-4" aria-labelledby="about-certifications-title">
           <h2 id="about-certifications-title" class="section-title">Certificaciones</h2>
           <ul class="mt-6 divide-y divide-zinc-800/80 border-y border-zinc-800/80">
               {certifications.map(({ name, issuer, url, Icon }) => (
-                <li class="flex flex-wrap items-center justify-between gap-4 py-4">
-                  <div class="flex items-center gap-4">
-                    <span class="flex size-7 shrink-0 items-center justify-center text-sky-400 [&>*]:max-h-full [&>*]:w-full [&>*]:object-contain">
-                      <Icon />
-                    </span>
-                    <div>
-                      <p class="font-medium text-zinc-200">{name}</p>
-                      <p class="mt-1 text-sm text-zinc-500">{issuer}</p>
-                    </div>
+                <li class="grid grid-cols-[1.75rem_minmax(0,1fr)] items-center gap-x-4 gap-y-3 py-4 sm:flex sm:justify-between sm:gap-4">
+                  <span class="flex size-7 shrink-0 items-center justify-center text-sky-400 [&>*]:max-h-full [&>*]:w-full [&>*]:object-contain">
+                    <Icon />
+                  </span>
+                  <div class="min-w-0">
+                    <p class="font-medium text-zinc-200">{name}</p>
+                    <p class="mt-1 text-sm text-zinc-500">{issuer}</p>
                   </div>
                   {url && (
-                    <a href={url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-500 transition-colors hover:text-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60">
+                    <a href={url} target="_blank" rel="noopener noreferrer" class="col-start-2 inline-flex items-center gap-1.5 justify-self-start text-xs font-medium text-zinc-500 transition-colors hover:text-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 sm:col-auto sm:ml-auto">
                       Ver credencial
                       <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5-9 9M19 14v3a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3" /></svg>
                     </a>
@@ -151,18 +149,21 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
         </section>
       </div>
 
-      <aside class="space-y-8 lg:border-l lg:border-zinc-800/80 lg:pl-7">
-        <section aria-labelledby="about-contact-title">
+      <aside class="order-3 divide-y divide-zinc-800/80 lg:space-y-8 lg:divide-y-0 lg:border-l lg:border-zinc-800/80 lg:pl-7" aria-labelledby="about-information-title">
+        <div class="py-5 lg:hidden">
+          <h2 id="about-information-title" class="section-title !mt-0">Información</h2>
+        </div>
+        <section class="py-5 lg:py-0" aria-labelledby="about-contact-title">
           <h2 id="about-contact-title" class="sidebar-title">Contacto</h2>
-          <ul class="mt-4 space-y-3 text-sm">
+          <ul class="mt-3 space-y-1 text-sm lg:mt-4 lg:space-y-3">
             <li>
-              <a href="mailto:kendallcr2012@gmail.com" class="flex items-center gap-2.5 text-zinc-400 transition-colors hover:text-zinc-100">
+              <a href="mailto:kendallcr2012@gmail.com" class="flex min-h-10 items-center gap-2.5 text-zinc-400 transition-colors hover:text-zinc-100">
                 <span class="size-4 shrink-0 text-sky-400 [&>svg]:size-full" aria-hidden="true"><Mail /></span>
                 <span class="break-all">kendallcr2012@gmail.com</span>
               </a>
             </li>
             <li>
-              <a href="tel:+50684919253" class="flex items-center gap-2.5 text-zinc-400 transition-colors hover:text-zinc-100">
+              <a href="tel:+50684919253" class="flex min-h-10 items-center gap-2.5 text-zinc-400 transition-colors hover:text-zinc-100">
                 <span class="size-4 shrink-0 text-sky-400 [&>svg]:size-full" aria-hidden="true"><WhatsApp /></span>
                 +506 8491 9253
               </a>
@@ -170,7 +171,7 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
           </ul>
         </section>
 
-        <section aria-labelledby="about-languages-title">
+        <section class="py-5 lg:py-0" aria-labelledby="about-languages-title">
           <h2 id="about-languages-title" class="sidebar-title">Idiomas</h2>
           <ul class="mt-4 space-y-3">
               {languages.map((language) => (
@@ -182,9 +183,9 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
           </ul>
         </section>
 
-        <section aria-labelledby="about-strengths-title">
+        <section class="py-5 lg:py-0" aria-labelledby="about-strengths-title">
           <h2 id="about-strengths-title" class="sidebar-title">Fortalezas</h2>
-          <ul class="mt-4 space-y-2.5">
+          <ul class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 lg:block lg:space-y-2.5">
             {strengths.map((strength) => (
               <li class="flex items-center gap-2.5 text-sm text-zinc-400">
                 <span class="size-1 rounded-full bg-sky-400" aria-hidden="true"></span>
@@ -194,9 +195,9 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
           </ul>
         </section>
 
-        <section aria-labelledby="about-areas-title">
+        <section class="py-5 lg:py-0" aria-labelledby="about-areas-title">
           <h2 id="about-areas-title" class="sidebar-title">Áreas de interés</h2>
-          <ul class="mt-4 space-y-2.5">
+          <ul class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 lg:block lg:space-y-2.5">
             {areas.map((area) => (
               <li class="flex items-center gap-2.5 text-sm text-zinc-400">
                 <span class="size-1 rounded-full bg-sky-400" aria-hidden="true"></span>
@@ -208,7 +209,7 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
       </aside>
     </div>
 
-    <section class="print-hidden mt-12 flex flex-col items-center gap-5 border-t border-zinc-800/80 pt-8 text-center" aria-labelledby="about-cv-title">
+    <section class="print-hidden mt-12 flex flex-col items-center gap-5 pt-8 text-center sm:border-t sm:border-zinc-800/80" aria-labelledby="about-cv-title">
       <div>
         <p class="font-mono text-xs uppercase tracking-[0.16em] text-zinc-600">Currículum</p>
         <h2 id="about-cv-title" class="mt-2 text-xl font-semibold text-white">Currículum completo</h2>

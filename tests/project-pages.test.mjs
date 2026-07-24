@@ -70,6 +70,7 @@ test("project details render the full description, product value, platform, and 
     assert.match(detail, new RegExp(project.platform));
     assert.match(detail, /Lo que ofrece/);
     assert.match(detail, /Tecnologías/);
+    assert.match(detail, /Todos los proyectos/);
     assert.match(detail, /Siguiente proyecto/);
     assert.doesNotMatch(detail, /Aspectos destacados/);
     assert.doesNotMatch(detail, /Ruta de navegación/);
