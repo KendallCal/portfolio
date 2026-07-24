@@ -75,25 +75,27 @@ const qualities = [
         </p>
       </div>
 
-      <div class="flex flex-wrap gap-x-6 gap-y-3">
-        {qualities.map((quality) => (
-          <div class="flex items-center gap-2 text-sm text-zinc-400">
-            {quality.icon === "circle" ? (
-              <svg class="size-4 shrink-0 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <circle cx="12" cy="12" r="9" />
-                <circle cx="12" cy="12" r="4.5" />
-                <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
-              </svg>
-            ) : quality.icon === "shield" ? (
-              <svg class="size-4 shrink-0 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <div class="flex flex-nowrap items-center gap-3 sm:gap-5">
+        {qualities.map((quality, index) => (
+          <div class="group flex shrink-0 items-center gap-2 text-xs text-zinc-400 transition-colors duration-300 hover:text-zinc-200 sm:text-sm">
+            <svg
+              class="quality-icon size-[1.125rem] shrink-0"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              style={`animation-delay: ${index * 0.55}s;`}
+              aria-hidden="true"
+            >
+              {quality.icon === "shield" ? (
+                <>
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-3.5 7-9V6l-7-3-7 3v6c0 5.5 7 9 7 9z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="m9.5 12 1.8 1.8 3.2-3.6" />
-              </svg>
-            ) : (
-              <svg class="size-4 shrink-0 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                </>
+              ) : (
                 <path stroke-linecap="round" stroke-linejoin="round" d={quality.icon} />
-              </svg>
-            )}
+              )}
+            </svg>
             <span class="font-medium text-zinc-300">{quality.label}</span>
           </div>
         ))}
@@ -153,3 +155,47 @@ const qualities = [
     </a>
   </div>
 </section>
+
+<style>
+  .quality-icon {
+    filter: drop-shadow(0 0 4px rgb(56 189 248 / 0.35));
+    animation: quality-color-cycle 5.5s ease-in-out infinite;
+    transition: filter 300ms ease;
+  }
+
+  .group:hover .quality-icon {
+    filter: drop-shadow(0 0 10px currentColor)
+      drop-shadow(0 0 18px currentColor);
+    animation-play-state: paused;
+  }
+
+  @keyframes quality-color-cycle {
+    0%,
+    100% {
+      color: rgb(56 189 248);
+      opacity: 0.85;
+    }
+
+    25% {
+      color: rgb(129 140 248);
+      opacity: 1;
+    }
+
+    50% {
+      color: rgb(34 211 238);
+      opacity: 0.9;
+    }
+
+    75% {
+      color: #fcb669;
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .quality-icon {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>

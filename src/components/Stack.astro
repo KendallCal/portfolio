@@ -105,7 +105,7 @@ function colorFor(name: string) {
     background:
       radial-gradient(circle at 20% 24%, rgb(14 165 233 / 0.045), transparent 24%),
       radial-gradient(circle at 79% 70%, rgb(139 92 246 / 0.04), transparent 25%),
-      #08080b;
+      #0b0c13;
     isolation: isolate;
   }
 
@@ -141,7 +141,7 @@ function colorFor(name: string) {
       rgb(var(--glow-r) var(--glow-g) var(--glow-b) / 0.16),
       transparent 40%
     );
-    transition: opacity 400ms ease;
+    transition: opacity 650ms ease;
     pointer-events: none;
   }
 
@@ -315,14 +315,14 @@ function colorFor(name: string) {
     }
 
     const profileBySize: Record<string, { jitter: number; spring: number }> = {
-      small: { jitter: 0.012, spring: 0.012 },
-      medium: { jitter: 0.02, spring: 0.008 },
-      large: { jitter: 0.03, spring: 0.006 },
+      small: { jitter: 0.004, spring: 0.014 },
+      medium: { jitter: 0.007, spring: 0.01 },
+      large: { jitter: 0.01, spring: 0.008 },
     };
 
-    const DAMPING = 0.965;
+    const DAMPING = 0.94;
     const REPEL_RADIUS = 110;
-    const REPEL_STRENGTH = 1.6;
+    const REPEL_STRENGTH = 0.75;
     const CONNECT_RADIUS = 170; // distancia máxima para dibujar una línea entre dos íconos
     const GLOW_RADIUS = 260; // distancia máxima para que un ícono "preste" su color al glow
     const DEFAULT_COLOR: [number, number, number] = [56, 189, 248];
@@ -336,8 +336,8 @@ function colorFor(name: string) {
         motion,
         ox: 0,
         oy: 0,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
+        vx: (Math.random() - 0.5) * 0.12,
+        vy: (Math.random() - 0.5) * 0.12,
         jitter: profile.jitter,
         spring: profile.spring,
         color: hexToRgb(li.dataset.color ?? "38bdf8"),
@@ -454,7 +454,7 @@ function colorFor(name: string) {
           ? particles[nearestIdx].color
           : DEFAULT_COLOR;
 
-      currentColor = currentColor.map((c, k) => c + (target[k] - c) * 0.07) as [
+      currentColor = currentColor.map((c, k) => c + (target[k] - c) * 0.035) as [
         number,
         number,
         number,

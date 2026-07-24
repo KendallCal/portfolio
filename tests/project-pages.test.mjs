@@ -11,16 +11,17 @@ const readSource = (path) =>
 const extractProjectCards = (html) =>
   html.match(/<article\b[^>]*\bproject-card\b[\s\S]*?<\/article>/g) ?? [];
 
-test("the catalog is focused, breadcrumb-free, and preserves the shared cards", () => {
+test("the catalog is minimal, breadcrumb-free, and preserves the shared cards", () => {
   const homepage = readBuiltPage("/index.html");
   const catalog = readBuiltPage("/projects/index.html");
 
   assert.match(catalog, /data-project-catalog/);
   assert.doesNotMatch(catalog, /proyectos realizados/i);
-  assert.match(catalog, /Soluciones construidas con/);
-  assert.match(catalog, /intención/);
-  assert.match(catalog, /Cada proyecto reúne decisiones de producto, diseño y desarrollo/);
   assert.doesNotMatch(catalog, /Trabajo seleccionado/);
+  assert.match(catalog, />\s*Proyectos\s*</);
+  assert.match(catalog, /Una selección de proyectos personales/);
+  assert.doesNotMatch(catalog, /data-search-input/);
+  assert.doesNotMatch(catalog, /data-filter-btn/);
   assert.doesNotMatch(catalog, /Ruta de navegación/);
 
   const catalogCards = extractProjectCards(catalog);
@@ -29,16 +30,36 @@ test("the catalog is focused, breadcrumb-free, and preserves the shared cards", 
   assert.deepEqual(catalogCards, homepageCards);
 });
 
+test("featured projects use an ordered two-card carousel with conditional controls", () => {
+  const gridSource = readSource("src/components/projects/ProjectGrid.astro");
+  const carouselSource = readSource(
+    "src/components/projects/ProjectCarousel.astro",
+  );
+
+  assert.match(gridSource, /projects\.filter\(\(project\) => project\.featured\)/);
+  assert.match(gridSource, /<ProjectCarousel projects=\{visibleProjects\}/);
+  assert.match(carouselSource, /projects\.length > 2/);
+  assert.match(carouselSource, /data-project-carousel/);
+  assert.match(carouselSource, /Carousel-Chevron-Left\.astro/);
+  assert.match(carouselSource, /Carousel-Chevron-Right\.astro/);
+  assert.match(carouselSource, /translate3d/);
+});
+
 test("project details render the full description, product value, platform, and clean metadata", () => {
   const projects = [
     {
       slug: "eduvialcr",
-      fullDescription: "EduvialCR es una plataforma web desarrollada con Next.js",
-      platform: "Web y Android",
+      fullDescription: "EduvialCR es una plataforma EdTech",
+      platform: "Web[\\s\\S]*Móvil",
     },
     {
       slug: "academia",
-      fullDescription: "AcademIA es una plataforma web multiagente",
+      fullDescription: "AcademIA es una plataforma multiagente",
+      platform: "Web",
+    },
+    {
+      slug: "bingo-demo",
+      fullDescription: "Bingo Demo es un proyecto experimental",
       platform: "Web",
     },
   ];
@@ -54,30 +75,40 @@ test("project details render the full description, product value, platform, and 
     assert.doesNotMatch(detail, /Ruta de navegación/);
     assert.doesNotMatch(detail, /\d+ tecnologías/);
   }
+
+  const eduvial = readBuiltPage("/projects/eduvialcr/index.html");
+  const academia = readBuiltPage("/projects/academia/index.html");
+  const bingo = readBuiltPage("/projects/bingo-demo/index.html");
+  assert.match(eduvial, /Información/);
+  assert.match(eduvial, /Full stack/);
+  assert.match(eduvial, /Dispositivos/);
+  assert.match(eduvial, /Mi aporte/);
+  assert.doesNotMatch(eduvial, /Navegación del pie de página/);
+  assert.match(academia, /Información/);
+  assert.match(academia, /Mi aporte/);
+  assert.match(bingo, /Información/);
+  assert.match(bingo, /Mi aporte/);
 });
 
-test("project actions are conditional and the live action copies the CV button design", () => {
+test("project actions are conditional, compact, and use the project accent", () => {
   const eduvial = readBuiltPage("/projects/eduvialcr/index.html");
   const academia = readBuiltPage("/projects/academia/index.html");
   const detailSource = readSource("src/pages/projects/[slug].astro");
-  const aboutSource = readSource("src/components/AboutMe.astro");
 
   assert.match(eduvial, />\s*Ver proyecto\s*</);
   assert.doesNotMatch(eduvial, />\s*Ver repositorio\s*</);
-  assert.doesNotMatch(academia, />\s*Ver proyecto\s*</);
-  assert.doesNotMatch(academia, />\s*Ver repositorio\s*</);
-
-  for (const cssClass of [
-    "rounded-full",
-    "border-sky-400/30",
-    "bg-sky-400/10",
-    "text-sky-300",
-    "hover:bg-sky-400",
-    "active:scale-[0.97]",
-  ]) {
-    assert.match(aboutSource, new RegExp(cssClass.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    assert.match(detailSource, new RegExp(cssClass.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  }
+  assert.match(academia, />\s*Ver proyecto\s*</);
+  assert.match(academia, />\s*Ver repositorio\s*</);
+  assert.match(readBuiltPage("/projects/bingo-demo/index.html"), />\s*Ver repositorio\s*</);
+  assert.doesNotMatch(eduvial, /tu-usuario/);
+  assert.doesNotMatch(readBuiltPage("/index.html"), /tu-usuario|tu-dominio/);
+  assert.match(detailSource, /class="project-action"/);
+  assert.match(detailSource, /height: 2\.25rem/);
+  assert.match(detailSource, /color: var\(--project-accent\)/);
+  assert.match(detailSource, /color-mix\(in srgb, var\(--project-accent\)/);
+  assert.match(detailSource, /OpenIcon/);
+  assert.match(detailSource, /GitHubIcon/);
+  assert.match(detailSource, /isAvailableProjectUrl/);
 });
 
 test("the gallery is a data-driven carousel with optional privacy-enhanced video", () => {
@@ -86,6 +117,8 @@ test("the gallery is a data-driven carousel with optional privacy-enhanced video
   const eduvial = readBuiltPage("/projects/eduvialcr/index.html");
 
   assert.match(dataSource, /type ProjectMedia/);
+  assert.match(dataSource, /interface ProjectCaseStudy/);
+  assert.match(dataSource, /eduvial-simulator-selection-concept\.png/);
   assert.match(dataSource, /type: "youtube"/);
   assert.match(dataSource, /platforms: ProjectPlatform\[\]/);
   assert.match(gallerySource, /youtube-nocookie\.com\/embed/);
@@ -94,7 +127,12 @@ test("the gallery is a data-driven carousel with optional privacy-enhanced video
   assert.match(gallerySource, /aria-label="Siguiente diapositiva"/);
   assert.match(gallerySource, /motion-reduce:transition-none/);
   assert.match(gallerySource, /touchstart/);
-  assert.match(gallerySource, /ArrowRight/);
+  assert.doesNotMatch(gallerySource, /Vista del proyecto/);
+  assert.match(gallerySource, /aspect-video/);
+  assert.match(gallerySource, /Carousel-Chevron-Left\.astro/);
+  assert.match(gallerySource, /Carousel-Chevron-Right\.astro/);
   assert.match(gallerySource, /data-play-video/);
+  assert.doesNotMatch(gallerySource, /data-gallery-caption/);
   assert.match(eduvial, /data-gallery/);
+  assert.doesNotMatch(eduvial, /mockups y no representan necesariamente el estado exacto de producción/);
 });

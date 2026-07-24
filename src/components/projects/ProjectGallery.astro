@@ -2,6 +2,8 @@
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import type { ProjectMedia } from "../../data/projects";
+import CarouselChevronLeft from "../icons/Carousel-Chevron-Left.astro";
+import CarouselChevronRight from "../icons/Carousel-Chevron-Right.astro";
 
 interface Props {
   title: string;
@@ -12,7 +14,7 @@ interface Props {
 const { title, image, media = [] } = Astro.props;
 
 type Slide =
-  | { type: "image"; image: ImageMetadata; alt: string; caption?: string }
+  | { type: "image"; image: ImageMetadata; alt: string }
   | { type: "youtube"; videoId: string; title: string };
 
 // The cover image always leads the gallery; anything in `media` follows it.
@@ -21,21 +23,20 @@ const hasMultiple = slides.length > 1;
 ---
 
 <div class="relative" data-gallery>
-  <p class="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.16em] text-zinc-600">
-    <span aria-hidden="true">◇</span> Galería del proyecto
-  </p>
-
   <div
-    class="group/frame relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-950 shadow-[0_25px_70px_-25px_rgba(0,0,0,0.65)] outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+    class="relative overflow-visible rounded-xl border border-zinc-800/80 bg-[#0B0C13] shadow-[0_24px_60px_-32px_rgba(0,0,0,0.75)] outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
     tabindex={hasMultiple ? "0" : undefined}
     aria-roledescription={hasMultiple ? "carrusel" : undefined}
     aria-label={hasMultiple ? `Galería de ${title}, usa las flechas del teclado para navegar` : undefined}
     data-gallery-frame
   >
-    <div class="relative aspect-[16/10] w-full overflow-hidden bg-zinc-900" data-gallery-viewport>
+    <div class="relative aspect-video w-full overflow-hidden rounded-[0.7rem] bg-zinc-900" data-gallery-viewport>
       <div class="flex h-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none" data-gallery-track>
         {slides.map((slide, index) => (
-          <div class="h-full w-full flex-none" data-gallery-slide>
+          <div
+            class="h-full w-full flex-none"
+            data-gallery-slide
+          >
             {slide.type === "image" ? (
               <Image
                 src={slide.image}
@@ -78,21 +79,17 @@ const hasMultiple = slides.length > 1;
           type="button"
           data-gallery-prev
           aria-label="Diapositiva anterior"
-          class="absolute left-3 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-zinc-950/70 text-zinc-300 opacity-0 backdrop-blur-sm transition-all duration-200 hover:border-sky-400/50 hover:text-sky-300 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 group-hover/frame:opacity-100"
+          class="absolute left-2 top-1/2 z-20 flex h-14 w-8 -translate-y-1/2 cursor-pointer items-center justify-center text-zinc-300 drop-shadow-[0_0_8px_rgba(0,0,0,0.9)] transition-all duration-200 hover:text-[var(--project-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 sm:-left-10 [&_svg]:h-10 [&_svg]:w-5"
         >
-          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6" />
-          </svg>
+          <CarouselChevronLeft />
         </button>
         <button
           type="button"
           data-gallery-next
           aria-label="Siguiente diapositiva"
-          class="absolute right-3 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-zinc-950/70 text-zinc-300 opacity-0 backdrop-blur-sm transition-all duration-200 hover:border-sky-400/50 hover:text-sky-300 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 group-hover/frame:opacity-100"
+          class="absolute right-2 top-1/2 z-20 flex h-14 w-8 -translate-y-1/2 cursor-pointer items-center justify-center text-zinc-300 drop-shadow-[0_0_8px_rgba(0,0,0,0.9)] transition-all duration-200 hover:text-[var(--project-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 sm:-right-10 [&_svg]:h-10 [&_svg]:w-5"
         >
-          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6" />
-          </svg>
+          <CarouselChevronRight />
         </button>
 
         <div
@@ -106,33 +103,6 @@ const hasMultiple = slides.length > 1;
     )}
   </div>
 
-  {hasMultiple && (
-    <div class="mt-3 flex gap-2 overflow-x-auto pb-1" data-gallery-thumbs>
-      {slides.map((slide, index) => (
-        <button
-          type="button"
-          data-gallery-thumb
-          data-index={index}
-          data-active={index === 0 ? "true" : "false"}
-          aria-label={`Ir a la diapositiva ${index + 1}`}
-          class="relative size-14 shrink-0 overflow-hidden rounded-lg border border-zinc-800 opacity-60 transition-all duration-200 hover:opacity-100 data-[active=true]:opacity-100 data-[active=true]:border-sky-400"
-        >
-          {slide.type === "image" ? (
-            <Image src={slide.image} alt="" width={112} height={112} class="h-full w-full object-cover" />
-          ) : (
-            <>
-              <img src={`https://img.youtube.com/vi/${slide.videoId}/default.jpg`} alt="" class="h-full w-full object-cover" />
-              <span class="absolute inset-0 flex items-center justify-center bg-black/40">
-                <svg class="size-3.5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M8 5v14l11-7Z" />
-                </svg>
-              </span>
-            </>
-          )}
-        </button>
-      ))}
-    </div>
-  )}
 </div>
 
 <script>
@@ -145,14 +115,12 @@ const hasMultiple = slides.length > 1;
     const prevBtn = gallery.querySelector<HTMLButtonElement>("[data-gallery-prev]");
     const nextBtn = gallery.querySelector<HTMLButtonElement>("[data-gallery-next]");
     const counter = gallery.querySelector<HTMLElement>("[data-gallery-counter]");
-    const thumbs = Array.from(gallery.querySelectorAll<HTMLButtonElement>("[data-gallery-thumb]"));
     const total = slides.length;
     let current = 0;
 
     function render() {
       if (track) track.style.transform = `translateX(-${current * 100}%)`;
       if (counter) counter.textContent = `${current + 1} / ${total}`;
-      thumbs.forEach((thumb, i) => thumb.setAttribute("data-active", String(i === current)));
     }
 
     function goTo(index: number) {
@@ -162,10 +130,6 @@ const hasMultiple = slides.length > 1;
 
     prevBtn?.addEventListener("click", () => goTo(current - 1));
     nextBtn?.addEventListener("click", () => goTo(current + 1));
-    thumbs.forEach((thumb) => {
-      thumb.addEventListener("click", () => goTo(Number(thumb.dataset.index ?? 0)));
-    });
-
     frame?.addEventListener("keydown", (event) => {
       if (event.key === "ArrowLeft") goTo(current - 1);
       if (event.key === "ArrowRight") goTo(current + 1);

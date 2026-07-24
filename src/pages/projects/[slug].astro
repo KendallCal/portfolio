@@ -1,9 +1,10 @@
 ---
 import "../../styles/global.css";
 import GitHubIcon from "../../components/icons/GitHub.astro";
+import OpenIcon from "../../components/icons/Open.astro";
 import ProjectGallery from "../../components/projects/ProjectGallery.astro";
 import ProjectTechnology from "../../components/projects/ProjectTechnology.astro";
-import { projects, type Project, type ProjectPlatform } from "../../data/projects";
+import { isAvailableProjectUrl, projects, type Project, type ProjectPlatform } from "../../data/projects";
 import Layout from "../../layouts/Layout.astro";
 
 export function getStaticPaths() {
@@ -29,203 +30,261 @@ const statusMap = {
   archived: { label: "Archivado", dotClass: "bg-zinc-500" },
 } as const;
 
-const platformMap: Record<ProjectPlatform, { label: string; icon: "browser" | "mobile" | "desktop" }> = {
-  web: { label: "Web", icon: "browser" },
-  android: { label: "Android", icon: "mobile" },
-  ios: { label: "iOS", icon: "mobile" },
-  desktop: { label: "Escritorio", icon: "desktop" },
+const platformLabels: Record<ProjectPlatform, string> = {
+  web: "Web",
+  android: "Móvil",
+  ios: "iOS",
+  desktop: "Escritorio",
 };
 
-const platformSummary = project.platforms.map((platform) => platformMap[platform].label).join(" y ");
 const status = statusMap[project.status];
-const isAvailableUrl = (url?: string) => Boolean(url && !/(?:tu-usuario|tu-dominio)/i.test(url));
-const liveUrl = isAvailableUrl(project.liveUrl) ? project.liveUrl : undefined;
-const repoUrl = isAvailableUrl(project.repoUrl) ? project.repoUrl : undefined;
+const liveUrl = isAvailableProjectUrl(project.liveUrl) ? project.liveUrl : undefined;
+const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undefined;
 ---
 
-<Layout title={`${project.title} — Proyectos`}>
-  <main class="mx-auto w-full max-w-6xl flex-1 px-6 pb-24 pt-16 sm:pt-20">
-    <header class="mx-auto max-w-4xl text-center">
-      <h1 class="text-4xl font-bold tracking-tight text-white sm:text-5xl">{project.title}</h1>
-      <p class="mx-auto mt-5 max-w-3xl text-sm leading-7 text-zinc-400 sm:text-base sm:leading-8">
-        {project.fullDesc}
-      </p>
+<Layout title={`${project.title} — Proyectos`} showFooter={false}>
+  <main
+    class="mx-auto w-full max-w-5xl flex-1 px-6 pb-10 pt-5 sm:pb-12 sm:pt-8"
+    style={`--project-accent: ${project.accentColor};`}
+  >
+    <header class="mx-auto max-w-4xl border-b border-zinc-800/80 pb-9 sm:pb-10">
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <p class="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-[var(--project-accent)]">
+          {project.categoryLabel}
+        </p>
+        <span class="text-zinc-700" aria-hidden="true">/</span>
+        <p class="inline-flex items-center gap-2 text-xs text-zinc-500">
+          <span
+            class:list={[
+              "size-1.5 rounded-full",
+              status.dotClass,
+              project.status === "in-progress" && "animate-pulse motion-reduce:animate-none",
+            ]}
+            aria-hidden="true"
+          ></span>
+          {status.label}
+        </p>
+      </div>
+
+      <h1 class="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">{project.title}</h1>
+      {project.caseStudy?.heroDescription ? (
+        <p class="mt-4 w-full text-sm leading-7 text-zinc-400 sm:text-base sm:leading-8">
+          {project.caseStudy.heroDescription}
+        </p>
+      ) : (
+        <p class="mt-4 w-full text-sm leading-7 text-zinc-400 sm:text-base">
+          {project.shortDesc}
+        </p>
+      )}
 
       {(repoUrl || liveUrl) && (
-        <div class="mt-8 flex flex-col items-center gap-3" aria-label="Enlaces del proyecto">
-          {repoUrl && (
-            <a
-              href={repoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group inline-flex h-11 items-center gap-2.5 rounded-full border border-zinc-700/80 bg-transparent px-6 text-sm font-semibold text-zinc-300 transition-all duration-300 ease-out hover:border-sky-400/60 hover:text-sky-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
-            >
-              <GitHubIcon class="size-4" />
-              Ver repositorio
+        <div class="mt-6 flex flex-wrap items-center gap-3" aria-label="Enlaces del proyecto">
+          {liveUrl && (
+            <a href={liveUrl} target="_blank" rel="noopener noreferrer" class="project-action">
+              Ver proyecto
+              <span class="[&_svg]:size-3.5" aria-hidden="true"><OpenIcon /></span>
             </a>
           )}
 
-          {liveUrl && (
-            <a
-              href={liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="
-                group
-                inline-flex
-                h-11
-                items-center
-                gap-2.5
-                rounded-full
-                border border-sky-400/30
-                bg-sky-400/10
-                px-6
-                text-sm
-                font-semibold
-                text-sky-300
-                shadow-sm
-                shadow-black/20
-                transition-all
-                duration-300
-                ease-out
-                hover:border-sky-400
-                hover:bg-sky-400
-                hover:text-zinc-950
-                hover:shadow-lg
-                hover:shadow-sky-400/25
-                focus-visible:outline-none
-                focus-visible:ring-2
-                focus-visible:ring-sky-400
-                focus-visible:ring-offset-2
-                focus-visible:ring-offset-zinc-950
-                active:scale-[0.97]
-                motion-reduce:transition-none
-                motion-reduce:active:scale-100
-              "
-            >
-              Ver proyecto
-              <svg class="size-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 3h6v6m0-6L10 14" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-              </svg>
+          {repoUrl && (
+            <a href={repoUrl} target="_blank" rel="noopener noreferrer" class="project-action">
+              Ver repositorio
+              <GitHubIcon class="size-3.5" />
             </a>
           )}
         </div>
       )}
     </header>
 
-    <div class="mt-12 sm:mt-14">
-      <ProjectGallery title={project.title} image={project.image} media={project.media} />
+    <div class="mx-auto mt-9 max-w-3xl sm:mt-10">
+      <ProjectGallery
+        title={project.title}
+        image={project.image}
+        media={project.media}
+      />
     </div>
 
-    <div class="mx-auto mt-16 grid max-w-4xl gap-12 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-16">
-      <section aria-labelledby="project-features-title">
-        <p class="text-xs font-medium uppercase tracking-[0.16em] text-sky-400">La solución</p>
-        <h2 id="project-features-title" class="mt-3 text-2xl font-semibold tracking-tight text-white">Lo que ofrece</h2>
+    <div class="mx-auto mt-14 grid max-w-4xl gap-12 lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-14">
+      <div class="space-y-12">
+        <section aria-labelledby="project-summary-title">
+          <h2 id="project-summary-title" class="text-xl font-semibold tracking-tight text-white">Resumen del proyecto</h2>
+          {project.caseStudy?.summary?.length ? (
+            <div class="mt-4 space-y-4 text-sm leading-7 text-zinc-400 sm:text-base sm:leading-8">
+              {project.caseStudy.summary.map((paragraph) => <p>{paragraph}</p>)}
+            </div>
+          ) : (
+            <p class="mt-4 text-sm leading-7 text-zinc-400 sm:text-base sm:leading-8">
+              {project.fullDesc}
+            </p>
+          )}
+        </section>
 
-        {project.features && project.features.length > 0 ? (
-          <ul class="mt-6 divide-y divide-zinc-800/70 border-y border-zinc-800/70">
-            {project.features.map((feature, index) => (
-              <li class="grid grid-cols-[1.75rem_1fr] gap-3 py-4 text-sm leading-6 text-zinc-400 sm:text-base sm:leading-7">
-                <span class="pt-0.5 text-xs font-medium tabular-nums text-sky-400" aria-hidden="true">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p class="mt-5 text-sm leading-7 text-zinc-400">El alcance funcional se encuentra en desarrollo.</p>
-        )}
-      </section>
+        <section aria-labelledby="project-features-title">
+          <h2 id="project-features-title" class="text-xl font-semibold tracking-tight text-white">Lo que ofrece</h2>
 
-      <aside class="h-fit border-t border-zinc-800/80 pt-8 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0" aria-labelledby="project-information-title">
-        <h2 id="project-information-title" class="text-base font-semibold text-white">Información</h2>
-
-        <dl class="mt-5 space-y-5">
-          <div>
-            <dt class="text-xs uppercase tracking-[0.12em] text-zinc-600">Estado</dt>
-            <dd class="mt-2 inline-flex items-center gap-2 text-sm text-zinc-300">
-              <span class:list={["size-1.5 rounded-full", status.dotClass]} aria-hidden="true"></span>
-              {status.label}
-            </dd>
-          </div>
-
-          <div>
-            <dt class="text-xs uppercase tracking-[0.12em] text-zinc-600">Plataforma</dt>
-            <dd class="mt-2 flex flex-wrap gap-3" aria-label={`Plataformas: ${platformSummary}`}>
-              {project.platforms.map((platform) => {
-                const item = platformMap[platform];
-                return (
-                  <span class="inline-flex items-center gap-1.5 text-sm text-zinc-300">
-                    {item.icon === "browser" ? (
-                      <svg class="size-4 text-zinc-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
-                        <rect x="3" y="4" width="18" height="16" rx="2" />
-                        <path d="M3 8h18" /><path d="M7 6h.01" />
-                      </svg>
-                    ) : item.icon === "mobile" ? (
-                      <svg class="size-4 text-zinc-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
-                        <rect x="7" y="2" width="10" height="20" rx="2" /><path d="M11 18h2" />
-                      </svg>
-                    ) : (
-                      <svg class="size-4 text-zinc-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
-                        <rect x="3" y="3" width="18" height="14" rx="2" /><path d="M8 21h8M12 17v4" />
-                      </svg>
-                    )}
-                    {item.label}
+          {project.features && project.features.length > 0 ? (
+            <ul class="mt-5">
+              {project.features.map((feature, index) => (
+                <li class="grid grid-cols-[1.75rem_1fr] items-center gap-3 border-t border-zinc-800/70 py-3.5 text-sm leading-6 text-zinc-400">
+                  <span class="font-mono text-xs font-medium tabular-nums text-[var(--project-accent)]" aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
                   </span>
-                );
-              })}
-            </dd>
-          </div>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="mt-5 text-sm leading-7 text-zinc-400">El alcance funcional se encuentra en desarrollo.</p>
+          )}
+        </section>
 
-          <div>
-            <dt class="text-xs uppercase tracking-[0.12em] text-zinc-600">Disponibilidad</dt>
-            <dd class="mt-2 text-sm leading-6 text-zinc-300">
-              {liveUrl ? "Producto público" : "Demo no pública"}
-              <span class="text-zinc-600"> · </span>
-              {repoUrl ? "Código disponible" : "Código privado"}
-            </dd>
-          </div>
-        </dl>
+        {project.techs.length > 0 && (
+          <section class="border-t border-zinc-800/80 pt-8" aria-labelledby="project-technologies-title">
+            <h2 id="project-technologies-title" class="text-xl font-semibold tracking-tight text-white">Tecnologías</h2>
+            <ul class="mt-5 flex flex-wrap gap-x-6 gap-y-4">
+              {project.techs.map((tech) => (
+                <li>
+                  <ProjectTechnology tech={tech} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+      </div>
+
+      <aside class="border-t border-zinc-800/80 pt-8 lg:self-stretch lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0" aria-labelledby="project-information-title">
+        <section>
+          <h2 id="project-information-title" class="text-base font-semibold text-white">Información</h2>
+          <dl class="mt-5 space-y-5">
+            <div>
+              <dt class="text-xs uppercase tracking-[0.12em] text-zinc-600">Estado</dt>
+              <dd class="mt-2 inline-flex items-center gap-2 text-sm text-zinc-300">
+                <span
+                  class:list={[
+                    "size-1.5 rounded-full",
+                    status.dotClass,
+                    project.status === "in-progress" && "animate-pulse motion-reduce:animate-none",
+                  ]}
+                  aria-hidden="true"
+                ></span>
+                {status.label}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-xs uppercase tracking-[0.12em] text-zinc-600">Categoría</dt>
+              <dd class="mt-2 text-sm text-zinc-300">{project.developmentType ?? project.categoryLabel}</dd>
+            </div>
+            <div>
+              <dt class="text-xs uppercase tracking-[0.12em] text-zinc-600">Dispositivos</dt>
+              <dd class="mt-3">
+                <ul class="space-y-2.5">
+                  {project.platforms.map((platform) => (
+                    <li class="flex items-center gap-2 text-sm text-zinc-300">
+                      {platform === "web" ? (
+                        <svg class="size-4 text-[var(--project-accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                          <rect x="3" y="4" width="18" height="16" rx="2" />
+                          <path d="M3 8h18" />
+                          <path d="M7 6h.01" />
+                        </svg>
+                      ) : platform === "desktop" ? (
+                        <svg class="size-4 text-[var(--project-accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                          <rect x="3" y="3" width="18" height="14" rx="2" />
+                          <path d="M8 21h8M12 17v4" />
+                        </svg>
+                      ) : (
+                        <svg class="size-4 text-[var(--project-accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                          <rect x="7" y="2" width="10" height="20" rx="2" />
+                          <path d="M11 18h2" />
+                        </svg>
+                      )}
+                      <span>{platformLabels[platform]}</span>
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        {project.caseStudy?.contributions?.length && (
+          <section class="mt-8 border-t border-zinc-800/80 pt-7" aria-labelledby="project-contribution-title">
+            <h2 id="project-contribution-title" class="text-base font-semibold text-white">Mi aporte</h2>
+            <ul class="mt-4 space-y-2.5">
+              {project.caseStudy.contributions.map((contribution) => (
+                <li class="flex gap-2 text-sm leading-6 text-zinc-400">
+                  <span class="font-mono text-[var(--project-accent)]" aria-hidden="true">/</span>
+                  <span>{contribution}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </aside>
     </div>
 
-    {project.techs.length > 0 && (
-      <section class="mx-auto mt-14 max-w-4xl border-t border-zinc-800/80 pt-8" aria-labelledby="project-technologies-title">
-        <h2 id="project-technologies-title" class="text-base font-semibold text-white">Tecnologías</h2>
-        <ul class="mt-5 flex flex-wrap gap-x-6 gap-y-4">
-          {project.techs.map((tech) => (
-            <li>
-              <ProjectTechnology tech={tech} />
-            </li>
-          ))}
-        </ul>
-      </section>
-    )}
-
-    <nav class="mx-auto mt-16 grid max-w-4xl gap-3 border-t border-zinc-800/80 pt-6 sm:grid-cols-2" aria-label="Navegación entre proyectos">
-      <a href="/projects" class="group rounded-xl border border-transparent p-4 transition-colors duration-200 hover:border-zinc-800 hover:bg-zinc-900/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60">
-        <span class="text-xs text-zinc-500">Explorar</span>
-        <span class="mt-1 flex items-center gap-2 text-sm font-medium text-zinc-200 transition-colors group-hover:text-sky-400">
-          <svg class="size-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transform-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16l-4-4m0 0 4-4m-4 4h18" />
-          </svg>
-          Todos los proyectos
-        </span>
+    <nav class="mx-auto mt-16 flex max-w-4xl flex-col gap-4 border-t border-zinc-800/80 pt-6 sm:flex-row sm:items-center sm:justify-between" aria-label="Navegación entre proyectos">
+      <a href="/projects" class="group inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60">
+        <svg class="size-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transform-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16l-4-4m0 0 4-4m-4 4h18" />
+        </svg>
+        Todos los proyectos
       </a>
 
       {nextProject && (
-        <a href={`/projects/${nextProject.slug}`} class="group rounded-xl border border-transparent p-4 text-right transition-colors duration-200 hover:border-zinc-800 hover:bg-zinc-900/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60">
-          <span class="text-xs text-zinc-500">Siguiente proyecto</span>
-          <span class="mt-1 flex items-center justify-end gap-2 text-sm font-medium text-zinc-200 transition-colors group-hover:text-sky-400">
-            {nextProject.title}
-            <svg class="size-4 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transform-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 8l4 4m0 0-4 4m4-4H3" />
-            </svg>
-          </span>
+        <a
+          href={`/projects/${nextProject.slug}`}
+          aria-label={`Siguiente proyecto: ${nextProject.title}`}
+          class="group inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60"
+        >
+          <span class="text-zinc-600">Siguiente:</span>
+          <span class="font-medium text-zinc-300 transition-colors duration-200 group-hover:text-[var(--project-accent)]">{nextProject.title}</span>
+          <svg class="size-4 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transform-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 8l4 4m0 0-4 4m4-4H3" />
+          </svg>
         </a>
       )}
     </nav>
   </main>
 </Layout>
+
+<style>
+  .project-action {
+    display: inline-flex;
+    height: 2.25rem;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid rgb(39 39 42);
+    border-radius: 9999px;
+    padding-inline: 1rem;
+    color: rgb(212 212 216);
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition:
+      color 250ms ease,
+      border-color 250ms ease,
+      background-color 250ms ease,
+      transform 150ms ease;
+  }
+
+  .project-action:hover {
+    color: var(--project-accent);
+    border-color: color-mix(in srgb, var(--project-accent) 55%, transparent);
+    background: color-mix(in srgb, var(--project-accent) 8%, transparent);
+  }
+
+  .project-action:focus-visible {
+    outline: 2px solid var(--project-accent);
+    outline-offset: 3px;
+  }
+
+  .project-action:active {
+    transform: scale(0.98);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-action {
+      transition: none;
+    }
+  }
+</style>

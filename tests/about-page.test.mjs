@@ -17,7 +17,9 @@ test("about page presents the extended professional profile", () => {
   assert.match(about, /Artificial Intelligence Fundamentals/);
   assert.match(about, /AWS Certified Cloud Practitioner/);
   assert.match(about, /Scrum Foundation Professional Certification/);
-  assert.match(about, /Desarrollador de software · Cloud Computing · IA aplicada/);
+  assert.match(about, /Desarrollador de software/);
+  assert.match(about, /Cloud Computing/);
+  assert.match(about, /Inteligencia Artificial/);
   assert.match(about, /A2\+ \/ B1/);
   assert.match(about, /Amazon Web Services/);
   assert.match(about, /IBM SkillsBuild/);

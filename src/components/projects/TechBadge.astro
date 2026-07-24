@@ -31,21 +31,32 @@ const TechIcon = iconMap[normalizedIcon as keyof typeof iconMap];
 ---
 
 {
-  TechIcon ? (
-    <span
-      class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/80 text-zinc-300 transition-colors duration-200 hover:border-sky-400/60 hover:text-sky-400 [&_svg]:h-5 [&_svg]:w-5"
-      title={tech.name}
-      aria-label={tech.name}
-    >
-      <TechIcon />
-    </span>
-  ) : (
-    <span
-      class="inline-flex h-9 min-w-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/80 px-2 text-[10px] font-medium text-zinc-300 transition-colors duration-200 hover:border-sky-400/60 hover:text-sky-400"
-      title={tech.name}
-      aria-label={tech.name}
-    >
-      {tech.name.slice(0, 2).toUpperCase()}
-    </span>
-  )
+  <span
+    class="tech-item inline-flex h-5 w-22 items-center justify-center gap-1.5 text-[0.6875rem] leading-none font-medium text-zinc-400 transition-colors duration-200"
+    title={tech.name}
+  >
+    {TechIcon ? (
+      <span
+        class="inline-flex size-3.5 shrink-0 items-center justify-center text-zinc-500 transition-colors duration-200 [&_svg]:size-3.5"
+        aria-hidden="true"
+      >
+        <TechIcon />
+      </span>
+    ) : (
+      <span class="text-[0.5625rem] text-zinc-500" aria-hidden="true">
+        {tech.name.slice(0, 2).toUpperCase()}
+      </span>
+    )}
+    <span>{tech.name}</span>
+  </span>
 }
+
+<style>
+  .tech-item:hover {
+    color: rgb(228 228 231);
+  }
+
+  .tech-item:hover > :first-child {
+    color: var(--project-accent, rgb(56 189 248));
+  }
+</style>

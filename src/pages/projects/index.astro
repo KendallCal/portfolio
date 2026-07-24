@@ -4,98 +4,64 @@ import ProjectCard from "../../components/projects/ProjectCard.astro";
 import { projects } from "../../data/projects";
 import Layout from "../../layouts/Layout.astro";
 
-// Build the filter list dynamically from the data so a new category
-// added later shows up here automatically.
-const categoryOrder: Record<string, number> = { web: 0, mobile: 1, ai: 2 };
-const categories = Array.from(
-  new Map(
-    projects
-      .slice()
-      .sort((a, b) => (categoryOrder[a.category] ?? 99) - (categoryOrder[b.category] ?? 99))
-      .map((p) => [p.category, p.categoryLabel]),
-  ),
-).map(([value, label]) => ({ value, label }));
+const categoryLabels: Record<string, string> = {
+  mobile: "Móvil",
+  ai: "Inteligencia artificial",
+  web: "Web",
+};
+
+const categories = [...new Set(projects.map((project) => project.category))].map((value) => ({
+  value,
+  label: categoryLabels[value] ?? value,
+}));
 ---
 
 <Layout title="Proyectos — Kendall Calderón">
-  <main data-project-catalog class="mx-auto w-full max-w-6xl flex-1 px-6 pb-24 pt-2 sm:pt-3">
-    <header class="w-full text-center">
-      <p class="inline-flex items-center gap-1.5 font-mono text-xs font-medium uppercase tracking-[0.18em] text-sky-400">
-        <span aria-hidden="true">&gt;</span> Proyectos
-      </p>
-
-      <h1 class="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-        Soluciones construidas con <span class="text-sky-400">intención</span>
+  <main data-project-catalog class="mx-auto w-full max-w-6xl flex-1 px-6 pb-24 pt-3 sm:pt-5">
+    <header class="mx-auto max-w-5xl text-center">
+      <h1 class="projects-title text-3xl font-bold tracking-tight sm:text-4xl">
+        Proyectos
       </h1>
 
-      <p class="mt-4 w-full text-base leading-7 text-zinc-400 sm:text-lg sm:leading-8">
-        Cada proyecto reúne decisiones de producto, diseño y desarrollo para convertir una necesidad concreta en una solución funcional.
+      <p class="mx-auto mt-2 max-w-3xl text-sm leading-6 text-zinc-400 sm:text-base">
+        Una selección de proyectos personales que reflejan mi forma de aprender, resolver problemas y construir con tecnología.
       </p>
-
     </header>
 
     {projects.length > 0 ? (
       <>
-        <!-- Filters -->
-        <div class="sticky top-0 z-10 mt-12 -mx-6 border-y border-zinc-800/70 bg-zinc-950/80 px-6 py-4 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:border">
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoría">
-              <button
-                type="button"
-                data-filter-btn="all"
-                aria-pressed="true"
-                class="filter-pill is-active rounded-full border px-3.5 py-1.5 font-mono text-xs font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60"
-              >
-                Todos
-              </button>
-              {categories.map((cat) => (
-                <button
-                  type="button"
-                  data-filter-btn={cat.value}
-                  aria-pressed="false"
-                  class="filter-pill rounded-full border px-3.5 py-1.5 font-mono text-xs font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60"
-                >
-                  {cat.label}
+        <div class="-mx-6 mt-8 overflow-x-auto px-6 sm:mx-0 sm:flex sm:justify-center sm:px-0">
+          <div
+            class="inline-flex min-w-max items-center gap-3"
+            data-project-filters
+            role="group"
+            aria-label="Filtrar proyectos por categoría"
+          >
+            <button type="button" data-filter="all" class="filter-tab is-active" aria-pressed="true">
+              Todos
+            </button>
+            {categories.map((category) => (
+              <>
+                <span class="font-mono text-xs text-sky-400/70" aria-hidden="true">/</span>
+                <button type="button" data-filter={category.value} class="filter-tab" aria-pressed="false">
+                  {category.label}
                 </button>
-              ))}
-            </div>
-
-            <label class="relative block w-full sm:w-80">
-              <span class="sr-only">Buscar proyectos</span>
-              <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                <circle cx="11" cy="11" r="7" />
-                <path stroke-linecap="round" d="m20 20-3.2-3.2" />
-              </svg>
-              <input
-                type="text"
-                data-search-input
-                placeholder="Buscar por nombre o tecnología..."
-                class="w-full rounded-full border border-zinc-800 bg-zinc-900/60 py-1.5 pl-9 pr-3 text-sm text-zinc-200 placeholder:text-zinc-500 transition-colors duration-200 focus:border-sky-400/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/40"
-              />
-            </label>
+              </>
+            ))}
           </div>
         </div>
 
-        <!-- Grid -->
-        <section class="mt-8" aria-label="Catálogo de proyectos">
-          <div data-project-grid class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project, index) => (
+        <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-project-grid>
+          {projects.map((project, index) => (
+            <div data-project-item data-category={project.category}>
               <ProjectCard project={project} index={index} />
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
 
-          <div data-empty-state class="hidden flex-col items-center gap-3 rounded-2xl border border-dashed border-zinc-800 py-20 text-center">
-            <span class="font-mono text-2xl text-zinc-700" aria-hidden="true">{"</>"}</span>
-            <p class="text-sm text-zinc-500">No se encontraron proyectos con esos criterios.</p>
-            <button
-              type="button"
-              data-reset-filters
-              class="mt-1 font-mono text-xs text-sky-400 underline-offset-4 transition-colors hover:text-sky-300 hover:underline"
-            >
-              Limpiar filtros
-            </button>
-          </div>
-        </section>
+        <p class="mt-12 hidden text-center text-sm text-zinc-500" data-empty-message>
+          No hay proyectos en esta categoría todavía.
+        </p>
       </>
     ) : (
       <div class="mt-12 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-zinc-800 py-20 text-center">
@@ -103,81 +69,98 @@ const categories = Array.from(
         <p class="text-sm text-zinc-500">Próximamente se publicarán nuevos proyectos.</p>
       </div>
     )}
-
   </main>
 </Layout>
 
-<style>
-  .filter-pill {
-    border-color: rgb(63 63 70 / 0.8); /* zinc-700/80 */
-    color: rgb(161 161 170); /* zinc-400 */
-    background-color: transparent;
-  }
-
-  .filter-pill:hover {
-    border-color: rgb(56 189 248 / 0.4); /* sky-400/40 */
-    color: rgb(226 232 240);
-  }
-
-  .filter-pill.is-active {
-    border-color: rgb(56 189 248 / 0.6); /* sky-400/60 */
-    background-color: rgb(56 189 248 / 0.1);
-    color: rgb(125 211 252); /* sky-300 */
-  }
-</style>
-
 <script>
-  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-filter-btn]"));
-  const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-project-card]"));
-  const emptyState = document.querySelector<HTMLElement>("[data-empty-state]");
-  const grid = document.querySelector<HTMLElement>("[data-project-grid]");
-  const searchInput = document.querySelector<HTMLInputElement>("[data-search-input]");
-  const resetBtn = document.querySelector<HTMLButtonElement>("[data-reset-filters]");
+  const filterButtons = document.querySelectorAll<HTMLButtonElement>("[data-project-filters] [data-filter]");
+  const items = document.querySelectorAll<HTMLElement>("[data-project-item]");
+  const emptyMessage = document.querySelector<HTMLElement>("[data-empty-message]");
 
-  let activeCategory = "all";
-  let searchTerm = "";
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const filter = button.dataset.filter;
 
-  function applyFilters() {
-    let visibleCount = 0;
-
-    cards.forEach((card) => {
-      const matchesCategory = activeCategory === "all" || card.dataset.category === activeCategory;
-      const matchesSearch = !searchTerm || (card.dataset.search ?? "").includes(searchTerm);
-      const visible = matchesCategory && matchesSearch;
-      card.classList.toggle("hidden", !visible);
-      if (visible) visibleCount += 1;
-    });
-
-    if (grid) grid.classList.toggle("hidden", visibleCount === 0);
-    emptyState?.classList.toggle("hidden", visibleCount !== 0);
-  }
-
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      activeCategory = btn.dataset.filterBtn ?? "all";
-      buttons.forEach((b) => {
-        const isActive = b === btn;
+      filterButtons.forEach((b) => {
+        const isActive = b === button;
         b.classList.toggle("is-active", isActive);
         b.setAttribute("aria-pressed", String(isActive));
       });
-      applyFilters();
-    });
-  });
 
-  searchInput?.addEventListener("input", (event) => {
-    searchTerm = (event.target as HTMLInputElement).value.trim().toLowerCase();
-    applyFilters();
-  });
+      let visibleCount = 0;
+      items.forEach((item) => {
+        const matches = filter === "all" || item.dataset.category === filter;
+        item.classList.toggle("hidden", !matches);
+        if (matches) visibleCount++;
+      });
 
-  resetBtn?.addEventListener("click", () => {
-    activeCategory = "all";
-    searchTerm = "";
-    if (searchInput) searchInput.value = "";
-    buttons.forEach((b) => {
-      const isAll = b.dataset.filterBtn === "all";
-      b.classList.toggle("is-active", isAll);
-      b.setAttribute("aria-pressed", String(isAll));
+      emptyMessage?.classList.toggle("hidden", visibleCount > 0);
     });
-    applyFilters();
   });
 </script>
+
+<style>
+  .projects-title {
+    color: rgb(56 189 248);
+    animation: projects-title-glow 8s ease-in-out infinite;
+  }
+
+  @keyframes projects-title-glow {
+    0%,
+    100% {
+      color: rgb(56 189 248);
+      text-shadow: 0 0 0 transparent;
+    }
+
+    50% {
+      color: rgb(125 211 252);
+      text-shadow: 0 0 12px rgb(56 189 248 / 0.28);
+    }
+  }
+
+  .filter-tab {
+    position: relative;
+    padding: 0.45rem 0.15rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgb(113 113 122);
+    transition: color 250ms ease;
+  }
+
+  .filter-tab::after {
+    position: absolute;
+    right: 18%;
+    bottom: 0;
+    left: 18%;
+    height: 1px;
+    content: "";
+    background: rgb(56 189 248);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 250ms ease;
+  }
+
+  .filter-tab:hover {
+    color: rgb(244 244 245);
+  }
+
+  .filter-tab:hover::after,
+  .filter-tab.is-active::after {
+    transform: scaleX(1);
+  }
+
+  .filter-tab.is-active {
+    color: rgb(250 250 250);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .projects-title {
+      animation: none;
+    }
+
+    .filter-tab,
+    .filter-tab::after {
+      transition: none;
+    }
+  }
+</style>

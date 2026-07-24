@@ -4,10 +4,12 @@ import { Image } from "astro:assets";
 import fotoKendall from "../assets/Foto.png";
 import Layout from "../layouts/Layout.astro";
 import AWS from "../components/icons/AWS.astro";
-import Certificate from "../components/icons/Certificate.astro";
+import CertiProf from "../components/icons/CertiProf.astro";
 import GoogleCloud from "../components/icons/GoogleCloud.astro";
 import IBM from "../components/icons/IBM.astro";
+import Mail from "../components/icons/Mail.astro";
 import Python from "../components/icons/Python.astro";
+import WhatsApp from "../components/icons/WhatsApp.astro";
 
 const education: Array<{
   title: string;
@@ -36,10 +38,10 @@ const certifications: Array<{
   Icon: typeof AWS;
 }> = [
   { name: "AWS Certified Cloud Practitioner", issuer: "Amazon Web Services", url: "https://www.credly.com/badges/460a64db-74a5-4d90-abd8-82ee548d23aa/public_url", Icon: AWS },
-  { name: "Google Cloud Computing Foundations", issuer: "Google Cloud", Icon: GoogleCloud },
+  { name: "Google Cloud Computing Foundations", issuer: "Google Cloud", url: "https://www.skills.google/public_profiles/e929612a-77cf-45c7-ab71-590c180cafad/badges/24337236", Icon: GoogleCloud },
   { name: "Artificial Intelligence Fundamentals", issuer: "IBM SkillsBuild", url: "https://www.credly.com/badges/59aae54b-8c24-4aa1-805b-3cb60b6626cc/public_url", Icon: IBM },
   { name: "Python Essentials 2", issuer: "Cisco Networking Academy", url: "https://www.credly.com/badges/7869e185-a592-4435-b4d7-6994eeceb4ff/public_url", Icon: Python },
-  { name: "Scrum Foundation Professional Certification", issuer: "CertiProf", url: "https://www.credly.com/badges/1d6a93de-8ea2-4434-a595-8869e3ae1490/public_url", Icon: Certificate },
+  { name: "Scrum Foundation Professional Certification", issuer: "CertiProf", url: "https://www.credly.com/badges/1d6a93de-8ea2-4434-a595-8869e3ae1490/public_url", Icon: CertiProf },
 ];
 
 const languages = [
@@ -50,20 +52,17 @@ const languages = [
 const strengths = [
   "Resolución de problemas",
   "Pensamiento analítico",
-  "Aprendizaje rápido",
   "Comunicación técnica",
-  "Adaptabilidad",
-  "Gestión del tiempo",
-  "Atención al detalle",
   "Trabajo en equipo",
+  "Aprendizaje continuo",
 ];
 
-const areas = ["Desarrollo de software", "Cloud", "Inteligencia artificial", "Automatización", "Soporte TI"];
+const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
 ---
 
 <Layout title="Sobre mí — Kendall Calderón">
-  <main class="mx-auto w-full max-w-5xl flex-1 px-6 pb-24 pt-3" data-about-page>
-    <header class="grid gap-8 border-b border-zinc-800/80 pb-12 md:grid-cols-[auto_1fr] md:items-center md:gap-10">
+  <main class="mx-auto w-full max-w-5xl flex-1 px-6 pb-20 pt-3" data-about-page>
+    <header class="grid gap-7 border-b border-zinc-800/80 pb-10 md:grid-cols-[auto_minmax(0,40rem)] md:items-center md:justify-center md:gap-9">
       <div class="relative mx-auto md:mx-0">
         <div class="pointer-events-none absolute inset-0 -z-10 translate-y-4 rounded-full bg-sky-400/10 blur-2xl"></div>
         <Image
@@ -71,7 +70,7 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia artificial", "Au
           alt="Kendall Calderón Burgos"
           width={176}
           height={176}
-          class="size-36 rounded-full object-cover sm:size-44"
+          class="size-32 rounded-full object-cover sm:size-40"
           loading="eager"
         />
       </div>
@@ -79,40 +78,38 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia artificial", "Au
       <div class="text-center md:text-left">
         <p class="font-mono text-xs font-medium uppercase tracking-[0.18em] text-sky-400">Perfil profesional</p>
         <h1 class="mt-3 text-4xl font-bold tracking-tight text-white sm:text-5xl">Kendall Calderón Burgos</h1>
-        <p class="mt-3 text-lg text-zinc-300">Desarrollador de software · Cloud Computing · IA aplicada</p>
-        <p class="mt-5 max-w-2xl text-sm leading-7 text-zinc-400 sm:text-base">
-          Profesional de TI con experiencia en soporte técnico y mentoría en programación, actualmente finalizando Ingeniería Informática. Desarrollo proyectos de software y cloud, utilizando inteligencia artificial como herramienta para investigar, automatizar y resolver problemas con mayor eficiencia.
+        <p class="mt-3 flex flex-wrap items-center justify-center gap-x-2 text-lg text-zinc-300 md:justify-start">
+          <span class="role-text">Desarrollador de software</span>
+          <span class="font-mono text-sky-400" aria-hidden="true">/</span>
+          <span class="role-text">Cloud Computing</span>
+          <span class="font-mono text-sky-400" aria-hidden="true">/</span>
+          <span class="role-text">Inteligencia Artificial</span>
         </p>
-
-        <div class="mt-6 flex flex-wrap justify-start gap-x-5 gap-y-2 text-sm text-zinc-500">
-          <span class="inline-flex items-center gap-2">
-            <svg class="size-4 shrink-0 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></svg>
-            San Ramón, Alajuela, Costa Rica
-          </span>
-          <a href="mailto:kendallcr2012@gmail.com" class="transition-colors hover:text-sky-400">kendallcr2012@gmail.com</a>
-          <a href="tel:+50684919253" class="transition-colors hover:text-sky-400">+506 8491 9253</a>
-          <a href="https://www.linkedin.com/in/kendallcal/" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-sky-400">LinkedIn</a>
-        </div>
+        <p class="mt-3 inline-flex items-center gap-2 text-sm text-zinc-500">
+          <svg class="size-4 shrink-0 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+            <circle cx="12" cy="10" r="2.5" />
+          </svg>
+          San Ramón, Alajuela, Costa Rica
+        </p>
       </div>
     </header>
 
-    <div class="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-16">
-      <div class="space-y-14">
-        <section aria-labelledby="about-profile-title">
-          <p class="section-label">01 · Perfil</p>
-          <h2 id="about-profile-title" class="section-title">Sobre mí</h2>
+    <div class="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-14">
+      <div class="space-y-12">
+        <section aria-labelledby="about-introduction-title">
+          <h2 id="about-introduction-title" class="section-title !mt-0">Resumen</h2>
           <div class="mt-5 space-y-4 text-base leading-8 text-zinc-400">
             <p>
-              Me interesa crear soluciones tecnológicas que respondan a necesidades concretas, con una estructura clara y decisiones técnicas bien justificadas. Mi recorrido combina proyectos propios, soporte TI y mentoría académica en programación.
+              Soy un profesional de tecnología con formación en Ingeniería Informática y una mirada amplia: me interesa entender el producto, las personas que lo usan y las decisiones técnicas que lo hacen posible. Encuentro motivación en los retos que exigen aprender rápido, pensar con claridad y construir con intención.
             </p>
             <p>
-              Estas experiencias han fortalecido mi capacidad para aprender con rapidez, analizar problemas y explicar conceptos técnicos de manera sencilla. Al abordar un proyecto, procuro comprender primero la necesidad y después construir una solución práctica y mantenible.
+              Me interesa convertir problemas reales en productos digitales claros y funcionales. Combino desarrollo de software, cloud e inteligencia artificial con pensamiento analítico, comunicación clara y una forma de trabajo colaborativa, orientada a la ejecución.
             </p>
           </div>
         </section>
 
         <section aria-labelledby="about-education-title">
-          <p class="section-label">02 · Trayectoria</p>
           <h2 id="about-education-title" class="section-title">Educación</h2>
           <div class="mt-6 divide-y divide-zinc-800/80 border-y border-zinc-800/80">
               {education.map((item) => (
@@ -129,13 +126,12 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia artificial", "Au
         </section>
 
         <section aria-labelledby="about-certifications-title">
-          <p class="section-label">03 · Aprendizaje continuo</p>
           <h2 id="about-certifications-title" class="section-title">Certificaciones</h2>
           <ul class="mt-6 divide-y divide-zinc-800/80 border-y border-zinc-800/80">
               {certifications.map(({ name, issuer, url, Icon }) => (
                 <li class="flex flex-wrap items-center justify-between gap-4 py-4">
                   <div class="flex items-center gap-4">
-                    <span class="flex size-10 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/60 p-2 text-sky-400 [&>svg]:max-h-full [&>svg]:w-full">
+                    <span class="flex size-7 shrink-0 items-center justify-center text-sky-400 [&>*]:max-h-full [&>*]:w-full [&>*]:object-contain">
                       <Icon />
                     </span>
                     <div>
@@ -155,19 +151,23 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia artificial", "Au
         </section>
       </div>
 
-      <aside class="space-y-10 lg:border-l lg:border-zinc-800/80 lg:pl-8">
-        <section aria-labelledby="about-details-title">
-          <h2 id="about-details-title" class="sidebar-title">Información</h2>
-          <dl class="mt-4 space-y-4 text-sm">
-            <div>
-              <dt class="text-zinc-600">Nombre completo</dt>
-              <dd class="mt-1 text-zinc-300">Kendall Calderón Burgos</dd>
-            </div>
-            <div>
-              <dt class="text-zinc-600">Ubicación</dt>
-              <dd class="mt-1 text-zinc-300">San Ramón, Alajuela, Costa Rica</dd>
-            </div>
-          </dl>
+      <aside class="space-y-8 lg:border-l lg:border-zinc-800/80 lg:pl-7">
+        <section aria-labelledby="about-contact-title">
+          <h2 id="about-contact-title" class="sidebar-title">Contacto</h2>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li>
+              <a href="mailto:kendallcr2012@gmail.com" class="flex items-center gap-2.5 text-zinc-400 transition-colors hover:text-zinc-100">
+                <span class="size-4 shrink-0 text-sky-400 [&>svg]:size-full" aria-hidden="true"><Mail /></span>
+                <span class="break-all">kendallcr2012@gmail.com</span>
+              </a>
+            </li>
+            <li>
+              <a href="tel:+50684919253" class="flex items-center gap-2.5 text-zinc-400 transition-colors hover:text-zinc-100">
+                <span class="size-4 shrink-0 text-sky-400 [&>svg]:size-full" aria-hidden="true"><WhatsApp /></span>
+                +506 8491 9253
+              </a>
+            </li>
+          </ul>
         </section>
 
         <section aria-labelledby="about-languages-title">
@@ -196,26 +196,28 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia artificial", "Au
 
         <section aria-labelledby="about-areas-title">
           <h2 id="about-areas-title" class="sidebar-title">Áreas de interés</h2>
-          <div class="mt-4 flex flex-col items-start gap-2">
+          <ul class="mt-4 space-y-2.5">
             {areas.map((area) => (
-              <span class="rounded-full border border-zinc-800 px-3 py-1.5 text-xs text-zinc-500">{area}</span>
+              <li class="flex items-center gap-2.5 text-sm text-zinc-400">
+                <span class="size-1 rounded-full bg-sky-400" aria-hidden="true"></span>
+                {area}
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
       </aside>
     </div>
 
-    <section class="print-hidden mt-16 border-t border-zinc-800/80 pt-10 text-center" aria-labelledby="about-cv-title">
-      <p class="font-mono text-xs uppercase tracking-[0.16em] text-zinc-600">Currículum</p>
-      <h2 id="about-cv-title" class="mt-3 text-2xl font-semibold text-white">Currículum completo</h2>
-      <p class="mx-auto mt-3 max-w-xl text-sm leading-6 text-zinc-500">
-        Descargá la versión completa en PDF.
-      </p>
+    <section class="print-hidden mt-12 flex flex-col items-center gap-5 border-t border-zinc-800/80 pt-8 text-center" aria-labelledby="about-cv-title">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-zinc-600">Currículum</p>
+        <h2 id="about-cv-title" class="mt-2 text-xl font-semibold text-white">Currículum completo</h2>
+      </div>
       <a
         href="/cv-kendall-calderon.pdf"
         download
         data-download-cv
-        class="mt-6 inline-flex h-11 items-center gap-2.5 rounded-full border border-sky-400/30 bg-sky-400/10 px-6 text-sm font-semibold text-sky-300 transition-all duration-300 hover:border-sky-400 hover:bg-sky-400 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-[0.97] motion-reduce:transition-none"
+        class="inline-flex h-10 shrink-0 items-center gap-2.5 rounded-full border border-sky-400/30 bg-sky-400/10 px-5 text-sm font-semibold text-sky-300 transition-all duration-300 hover:border-sky-400 hover:bg-sky-400 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-[0.97] motion-reduce:transition-none"
       >
         <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15V3m5 7-5 5-5-5M5 21h14a2 2 0 0 0 2-2v-4M3 15v4a2 2 0 0 0 2 2" /></svg>
         Descargar CV
@@ -225,14 +227,6 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia artificial", "Au
 </Layout>
 
 <style>
-  .section-label {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgb(56 189 248);
-  }
-
   .section-title {
     margin-top: 0.6rem;
     font-size: 1.5rem;
@@ -245,6 +239,44 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia artificial", "Au
     font-size: 0.95rem;
     font-weight: 600;
     color: rgb(244 244 245);
+  }
+
+  .role-text {
+    animation: role-text-glow 12s ease-in-out infinite;
+  }
+
+  .role-text:nth-child(3) {
+    animation-delay: 2.1s;
+  }
+
+  .role-text:nth-child(5) {
+    animation-delay: 4.2s;
+  }
+
+  @keyframes role-text-glow {
+    0%,
+    12%,
+    100% {
+      color: rgb(212 212 216);
+      text-shadow: 0 0 0 transparent;
+    }
+
+    28%,
+    40% {
+      color: rgb(125 211 252);
+      text-shadow: 0 0 8px rgb(56 189 248 / 0.28);
+    }
+
+    58% {
+      color: rgb(224 242 254);
+      text-shadow: 0 0 3px rgb(56 189 248 / 0.1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .role-text {
+      animation: none;
+    }
   }
 
   .empty-state {
