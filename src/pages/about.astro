@@ -1,8 +1,13 @@
 ---
+/* Estilos e imagen principal */
 import "../styles/global.css";
 import { Image } from "astro:assets";
-import fotoKendall from "../assets/Foto.png";
+import fotoKendall from "../assets/Foto.webp";
+
+/* Estructura general de la página */
 import Layout from "../layouts/Layout.astro";
+
+/* Iconos utilizados en certificaciones y contacto */
 import AWS from "../components/icons/AWS.astro";
 import CertiProf from "../components/icons/CertiProf.astro";
 import GoogleCloud from "../components/icons/GoogleCloud.astro";
@@ -11,26 +16,21 @@ import Mail from "../components/icons/Mail.astro";
 import Python from "../components/icons/Python.astro";
 import WhatsApp from "../components/icons/WhatsApp.astro";
 
-const education: Array<{
-  title: string;
-  institution: string;
-  period: string;
-  description?: string;
-}> = [
-  {
-    title: "Bachillerato en Ingeniería Informática",
-    institution: "Universidad Estatal a Distancia de Costa Rica",
-    period: "Sept. 2024 — Jun. 2027",
-    description: "En curso.",
-  },
-  {
-    title: "Diplomado en Informática",
-    institution: "Universidad Estatal a Distancia de Costa Rica",
-    period: "Ene. 2023 — Ago. 2024",
-    description: "Finalizado con distinción de honor.",
-  },
-];
+/* Sistema de idiomas */
+import type { Language } from "../i18n/config";
+import { getTranslations } from "../i18n/utils";
 
+/* Propiedades que puede recibir la página */
+interface Props {
+  language?: Language;
+}
+
+/* Idioma actual y contenido traducido */
+const { language = "es" } = Astro.props;
+const t = getTranslations(language);
+const education = t.about.education;
+
+/* Información de las certificaciones mostradas en el perfil */
 const certifications: Array<{
   name: string;
   issuer: string;
@@ -44,24 +44,15 @@ const certifications: Array<{
   { name: "Scrum Foundation Professional Certification", issuer: "CertiProf", url: "https://www.credly.com/badges/1d6a93de-8ea2-4434-a595-8869e3ae1490/public_url", Icon: CertiProf },
 ];
 
-const languages = [
-  { name: "Español", level: "Nativo" },
-  { name: "Inglés", level: "A2+ / B1" },
-];
-
-const strengths = [
-  "Resolución de problemas",
-  "Pensamiento analítico",
-  "Comunicación técnica",
-  "Trabajo en equipo",
-  "Aprendizaje continuo",
-];
-
-const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
+/* Listas traducidas utilizadas en la barra lateral */
+const languages = t.about.languages;
+const strengths = t.about.strengths;
+const areas = t.about.areas;
 ---
 
-<Layout title="Sobre mí — Kendall Calderón">
+<Layout title={t.metadata.about} language={language}>
   <main class="mx-auto w-full max-w-5xl flex-1 px-4 pb-14 pt-3 sm:px-6 sm:pb-20" data-about-page>
+    <!-- Presentación principal -->
     <header class="grid gap-6 border-b border-zinc-800/80 pb-8 sm:gap-7 sm:pb-10 md:grid-cols-[auto_minmax(0,40rem)] md:items-center md:justify-center md:gap-9">
       <div class="relative mx-auto md:mx-0">
         <div class="pointer-events-none absolute inset-0 -z-10 translate-y-4 rounded-full bg-sky-400/10 blur-2xl"></div>
@@ -76,41 +67,44 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
       </div>
 
       <div class="text-center md:text-left">
-        <p class="font-mono text-xs font-medium uppercase tracking-[0.18em] text-sky-400">Perfil profesional</p>
+        <p class="font-mono text-xs font-medium uppercase tracking-[0.18em] text-sky-400">{t.about.eyebrow}</p>
         <h1 class="mt-3 text-3xl font-bold tracking-tight text-white sm:text-5xl">Kendall Calderón Burgos</h1>
         <p class="mt-3 flex flex-wrap items-center justify-center gap-x-2 text-base text-zinc-300 sm:text-lg md:justify-start">
-          <span class="role-text">Desarrollador de software</span>
+          <span class="role-text">{t.about.roles[0]}</span>
           <span class="font-mono text-sky-400" aria-hidden="true">/</span>
-          <span class="role-text">Cloud Computing</span>
+          <span class="role-text">{t.about.roles[1]}</span>
           <span class="font-mono text-sky-400" aria-hidden="true">/</span>
-          <span class="role-text">Inteligencia Artificial</span>
+          <span class="role-text">{t.about.roles[2]}</span>
         </p>
         <p class="mt-3 inline-flex items-center gap-2 text-sm text-zinc-500">
           <svg class="size-4 shrink-0 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
             <circle cx="12" cy="10" r="2.5" />
           </svg>
-          San Ramón, Alajuela, Costa Rica
+          {t.about.location}
         </p>
       </div>
     </header>
 
+    <!-- Contenido profesional e información complementaria -->
     <div class="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-14">
       <div class="contents lg:block lg:space-y-12">
+        <!-- Resumen profesional -->
         <section class="order-1" aria-labelledby="about-introduction-title">
-          <h2 id="about-introduction-title" class="section-title !mt-0">Resumen</h2>
+          <h2 id="about-introduction-title" class="section-title mt-0!">{t.about.summaryTitle}</h2>
           <div class="mt-5 space-y-4 text-sm leading-7 text-zinc-400 sm:text-base sm:leading-8">
             <p>
-              Soy un profesional de tecnología con formación en Ingeniería Informática y una mirada amplia: me interesa entender el producto, las personas que lo usan y las decisiones técnicas que lo hacen posible. Encuentro motivación en los retos que exigen aprender rápido, pensar con claridad y construir con intención.
+              {t.about.summary[0]}
             </p>
             <p>
-              Me interesa convertir problemas reales en productos digitales claros y funcionales. Combino desarrollo de software, cloud e inteligencia artificial con pensamiento analítico, comunicación clara y una forma de trabajo colaborativa, orientada a la ejecución.
+              {t.about.summary[1]}
             </p>
           </div>
         </section>
 
+        <!-- Formación académica -->
         <section class="order-2" aria-labelledby="about-education-title">
-          <h2 id="about-education-title" class="section-title">Educación</h2>
+          <h2 id="about-education-title" class="section-title">{t.about.educationTitle}</h2>
           <div class="mt-6 divide-y divide-zinc-800/80 border-t border-zinc-800/80 sm:border-y">
               {education.map((item) => (
                 <article class="grid gap-2 py-5 sm:grid-cols-[1fr_auto] sm:gap-6">
@@ -125,12 +119,13 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
           </div>
         </section>
 
+        <!-- Certificaciones profesionales -->
         <section class="order-4" aria-labelledby="about-certifications-title">
-          <h2 id="about-certifications-title" class="section-title">Certificaciones</h2>
+          <h2 id="about-certifications-title" class="section-title">{t.about.certificationsTitle}</h2>
           <ul class="mt-6 divide-y divide-zinc-800/80 border-y border-zinc-800/80">
               {certifications.map(({ name, issuer, url, Icon }) => (
                 <li class="grid grid-cols-[1.75rem_minmax(0,1fr)] items-center gap-x-4 gap-y-3 py-4 sm:flex sm:justify-between sm:gap-4">
-                  <span class="flex size-7 shrink-0 items-center justify-center text-sky-400 [&>*]:max-h-full [&>*]:w-full [&>*]:object-contain">
+                  <span class="flex size-7 shrink-0 items-center justify-center text-sky-400 *:max-h-full *:w-full *:object-contain">
                     <Icon />
                   </span>
                   <div class="min-w-0">
@@ -139,7 +134,7 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
                   </div>
                   {url && (
                     <a href={url} target="_blank" rel="noopener noreferrer" class="col-start-2 inline-flex items-center gap-1.5 justify-self-start text-xs font-medium text-zinc-500 transition-colors hover:text-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 sm:col-auto sm:ml-auto">
-                      Ver credencial
+                      {t.about.credential}
                       <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5-9 9M19 14v3a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3" /></svg>
                     </a>
                   )}
@@ -149,12 +144,13 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
         </section>
       </div>
 
+      <!-- Información lateral: contacto, idiomas, fortalezas y áreas -->
       <aside class="order-3 divide-y divide-zinc-800/80 lg:space-y-8 lg:divide-y-0 lg:border-l lg:border-zinc-800/80 lg:pl-7" aria-labelledby="about-information-title">
         <div class="py-5 lg:hidden">
-          <h2 id="about-information-title" class="section-title !mt-0">Información</h2>
+          <h2 id="about-information-title" class="section-title mt-0!">{t.about.information}</h2>
         </div>
         <section class="py-5 lg:py-0" aria-labelledby="about-contact-title">
-          <h2 id="about-contact-title" class="sidebar-title">Contacto</h2>
+          <h2 id="about-contact-title" class="sidebar-title">{t.about.contact}</h2>
           <ul class="mt-3 space-y-1 text-sm lg:mt-4 lg:space-y-3">
             <li>
               <a href="mailto:kendallcr2012@gmail.com" class="flex min-h-10 items-center gap-2.5 text-zinc-400 transition-colors hover:text-zinc-100">
@@ -172,7 +168,7 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
         </section>
 
         <section class="py-5 lg:py-0" aria-labelledby="about-languages-title">
-          <h2 id="about-languages-title" class="sidebar-title">Idiomas</h2>
+          <h2 id="about-languages-title" class="sidebar-title">{t.about.languagesTitle}</h2>
           <ul class="mt-4 space-y-3">
               {languages.map((language) => (
                 <li class="flex items-center justify-between gap-4 text-sm">
@@ -184,7 +180,7 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
         </section>
 
         <section class="py-5 lg:py-0" aria-labelledby="about-strengths-title">
-          <h2 id="about-strengths-title" class="sidebar-title">Fortalezas</h2>
+          <h2 id="about-strengths-title" class="sidebar-title">{t.about.strengthsTitle}</h2>
           <ul class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 lg:block lg:space-y-2.5">
             {strengths.map((strength) => (
               <li class="flex items-center gap-2.5 text-sm text-zinc-400">
@@ -196,7 +192,7 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
         </section>
 
         <section class="py-5 lg:py-0" aria-labelledby="about-areas-title">
-          <h2 id="about-areas-title" class="sidebar-title">Áreas de interés</h2>
+          <h2 id="about-areas-title" class="sidebar-title">{t.about.areasTitle}</h2>
           <ul class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 lg:block lg:space-y-2.5">
             {areas.map((area) => (
               <li class="flex items-center gap-2.5 text-sm text-zinc-400">
@@ -209,10 +205,11 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
       </aside>
     </div>
 
+    <!-- Descarga del currículum -->
     <section class="print-hidden mt-12 flex flex-col items-center gap-5 pt-8 text-center sm:border-t sm:border-zinc-800/80" aria-labelledby="about-cv-title">
       <div>
-        <p class="font-mono text-xs uppercase tracking-[0.16em] text-zinc-600">Currículum</p>
-        <h2 id="about-cv-title" class="mt-2 text-xl font-semibold text-white">Currículum completo</h2>
+        <p class="font-mono text-xs uppercase tracking-[0.16em] text-zinc-600">{t.about.resume}</p>
+        <h2 id="about-cv-title" class="mt-2 text-xl font-semibold text-white">{t.about.fullResume}</h2>
       </div>
       <a
         href="/cv-kendall-calderon.pdf"
@@ -221,13 +218,14 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
         class="inline-flex h-10 shrink-0 items-center gap-2.5 rounded-full border border-sky-400/30 bg-sky-400/10 px-5 text-sm font-semibold text-sky-300 transition-all duration-300 hover:border-sky-400 hover:bg-sky-400 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 active:scale-[0.97] motion-reduce:transition-none"
       >
         <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15V3m5 7-5 5-5-5M5 21h14a2 2 0 0 0 2-2v-4M3 15v4a2 2 0 0 0 2 2" /></svg>
-        Descargar CV
+        {t.about.downloadResume}
       </a>
     </section>
   </main>
 </Layout>
 
 <style>
+  /* Títulos de las secciones principales */
   .section-title {
     margin-top: 0.6rem;
     font-size: 1.5rem;
@@ -236,12 +234,14 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
     color: white;
   }
 
+  /* Títulos utilizados en la información lateral */
   .sidebar-title {
     font-size: 0.95rem;
     font-weight: 600;
     color: rgb(244 244 245);
   }
 
+  /* Animación aplicada a los roles profesionales */
   .role-text {
     animation: role-text-glow 12s ease-in-out infinite;
   }
@@ -274,12 +274,14 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
     }
   }
 
+  /* Desactiva la animación cuando el usuario prefiere menos movimiento */
   @media (prefers-reduced-motion: reduce) {
     .role-text {
       animation: none;
     }
   }
 
+  /* Mensaje utilizado cuando una sección no tiene contenido */
   .empty-state {
     margin-top: 1.5rem;
     border-block: 1px solid rgb(39 39 42 / 0.8);
@@ -288,6 +290,7 @@ const areas = ["Desarrollo de software", "Cloud", "Inteligencia Artificial"];
     color: rgb(82 82 91);
   }
 
+  /* Ajustes para imprimir la página o guardarla como PDF */
   @media print {
     :global(body) {
       background: white !important;

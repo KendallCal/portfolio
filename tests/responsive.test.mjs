@@ -10,13 +10,13 @@ test("mobile navigation is accessible and keeps all global actions", () => {
 
   assert.match(header, /min-h-11/);
   assert.match(header, /size-11/);
-  assert.match(header, /Perfil de GitHub/);
-  assert.match(header, /Perfil de LinkedIn/);
+  assert.match(header, /t\.header\.github/);
+  assert.match(header, /t\.header\.linkedin/);
   assert.match(header, /event\.key !== "Escape"/);
   assert.match(header, /document\.body\.classList\.toggle\("overflow-hidden", open\)/);
   assert.match(header, /setMobileMenu\(false\)/);
   assert.match(header, /aria-hidden/);
-  assert.match(header, /lang\.toUpperCase\(\)/);
+  assert.match(header, /language\.toUpperCase\(\)/);
   assert.match(header, /rounded-2xl border border-white\/10 bg-zinc-950\/70/);
   assert.match(header, /backdrop-blur-2xl backdrop-saturate-150/);
   assert.match(header, /scale-\[0\.98\]/);
@@ -73,7 +73,7 @@ test("mobile experience and footer use compact stacked layouts", () => {
   assert.match(experience, /sm:flex-row/);
   assert.match(experience, /hidden font-normal text-white sm:inline/);
   assert.match(footer, /mailto:kendallcr2012@gmail\.com/);
-  assert.match(footer, /\{ label: "Sobre mí", href: "\/about" \}/);
+  assert.match(footer, /label: t\.header\.links\.about/);
   assert.match(footer, /hover:text-white sm:hidden/);
   assert.match(footer, /hidden text-sm font-normal text-zinc-300 sm:inline/);
   assert.match(footer, /hidden items-center gap-6 sm:flex/);
@@ -84,6 +84,35 @@ test("mobile experience and footer use compact stacked layouts", () => {
     stack.match(/@media \(max-width: 559px\)[\s\S]*?@media \(prefers-reduced-motion/)?.[0] ?? "",
     /min-height:/,
   );
+});
+
+test("technology data contains only the selected sixteen tools", () => {
+  const technologyData = readSource("src/data/technologies.ts");
+  const names = [...technologyData.matchAll(/\{ name: "([^"]+)"/g)].map(
+    ([, name]) => name,
+  );
+
+  assert.deepEqual(names, [
+    "Python",
+    "C#",
+    "AWS",
+    "Java",
+    "CSS",
+    "HTML",
+    "Git",
+    "GitHub",
+    "OpenAI",
+    "Claude",
+    "OpenCode",
+    "MySQL",
+    "VSA",
+    "VSM",
+    "Next.js",
+    "JavaScript",
+  ]);
+
+  const stack = readSource("src/components/Stack.astro");
+  assert.match(stack, /height: 29rem/);
 });
 
 test("project information is compact and ordered first on mobile", () => {
@@ -97,7 +126,7 @@ test("project information is compact and ordered first on mobile", () => {
   assert.match(detail, /grid grid-cols-3 gap-3/);
   assert.match(detail, /order-4 border-t/);
   assert.match(detail, /order-5 border-t/);
-  assert.match(detail, /aria-label="Navegación entre proyectos"/);
+  assert.match(detail, /aria-label=\{t\.detail\.projectNavigation\}/);
   assert.match(detail, /group hidden items-center gap-2.*md:inline-flex/);
   assert.match(detail, /nextProject/);
   assert.match(detail, /project-actions mt-6 grid grid-cols-2/);
@@ -122,7 +151,7 @@ test("about certifications are the final mobile profile section", () => {
   assert.match(aboutPage, /aria-labelledby="about-information-title"/);
   assert.match(
     aboutPage,
-    /id="about-information-title" class="section-title !mt-0">Información/,
+    /id="about-information-title" class="section-title mt-0!">\{t\.about\.information\}/,
   );
   assert.match(aboutPage, /py-5 lg:hidden/);
   assert.match(

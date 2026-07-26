@@ -1,55 +1,96 @@
 ---
-// @ts-ignore: side-effect font import without types
-import '@fontsource-variable/onest';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+/* Componentes principales */
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+/* Utilidades para el sistema de idiomas */
+import type { Language } from "../i18n/config";
+import { getTranslations, localizePath } from "../i18n/utils";
 
 interface Props {
-	title?: string;
-	showFooter?: boolean;
+  title?: string;
+  showFooter?: boolean;
+  language?: Language;
 }
 
-const { title = "Kendall Calderón — Portfolio", showFooter = true } = Astro.props;
+/* Configuración recibida por cada página */
+const { language = "es", showFooter = true } = Astro.props;
+
+/* Traducciones y título de la página */
+const t = getTranslations(language);
+const title = Astro.props.title ?? t.metadata.home;
+
+/* Rutas equivalentes en español e inglés */
+const pathname = Astro.url.pathname;
+const spanishPath = localizePath(pathname, "es");
+const englishPath = localizePath(pathname, "en");
+
+/* Convierte las rutas en URL completas cuando el sitio está configurado */
+const alternateHref = (path: string) =>
+  Astro.site ? new URL(path, Astro.site).toString() : path;
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body>
-		<div class="pointer-events-none fixed inset-0 z-[-2] min-h-screen w-full bg-neutral-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
-		<Header />
-		<slot />
-		{showFooter && <Footer />}
-	</body>
+<html lang={language}>
+  <head>
+    <!-- Configuración básica del documento -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Identidad visual -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+
+    <!-- Versiones disponibles en cada idioma -->
+    <link rel="alternate" hreflang="es" href={alternateHref(spanishPath)} />
+    <link rel="alternate" hreflang="en" href={alternateHref(englishPath)} />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={alternateHref(spanishPath)}
+    />
+
+    <title>{title}</title>
+  </head>
+
+  <body>
+    <!-- Fondo visual general del sitio -->
+    <div
+      class="pointer-events-none fixed inset-0 z-[-2] min-h-screen w-full bg-neutral-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"
+    >
+    </div>
+
+    <Header language={language} pathname={pathname} />
+
+    <!-- Contenido propio de cada página -->
+    <slot />
+
+    {showFooter && <Footer language={language} />}
+  </body>
 </html>
 
 <style>
-	:root {
-		color-scheme: light dark;
-	}
+  /* Apariencia general del documento */
+  :root {
+    color-scheme: light dark;
+  }
 
-	html {
-		font-family: "Onest Variable", system-ui, -apple-system, sans-serif;
-		margin: 0;
-		width: 100%;
-		overflow-x: clip;
-	}
+  html {
+    font-family: "Onest Variable", system-ui, -apple-system, sans-serif;
+    margin: 0;
+    width: 100%;
+    overflow-x: clip;
+  }
 
-	body {
-		background-color: #050505;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		min-height: 100vh;
-		margin: 0;
-		width: 100%;
-		overflow-x: clip;
-	}
-
+  /* Estructura principal de la página */
+  body {
+    background-color: #050505;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    width: 100%;
+    overflow-x: clip;
+  }
 </style>

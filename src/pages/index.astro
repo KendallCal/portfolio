@@ -1,37 +1,62 @@
 ---
+/* Estilos globales */
 import "../styles/global.css";
-import AboutMe from "../components/AboutMe.astro";
-import Experience from "../components/Experience.astro";
+
+/* Secciones principales de la página */
 import Hero from "../components/Hero.astro";
 import ProjectGrid from "../components/projects/ProjectGrid.astro";
+import Experience from "../components/Experience.astro";
+import AboutMe from "../components/AboutMe.astro";
 import Stack from "../components/Stack.astro";
+
+/* Layout general */
 import Layout from "../layouts/Layout.astro";
+
+/* Sistema de idiomas */
+import type { Language } from "../i18n/config";
+import { getTranslations } from "../i18n/utils";
+
+/* Propiedades que puede recibir la página */
+interface Props {
+  language?: Language;
+}
+
+/* Idioma actual y traducciones correspondientes */
+const { language = "es" } = Astro.props;
+const t = getTranslations(language);
 ---
 
-<Layout>
+<Layout language={language} title={t.metadata.home}>
   <main class="overflow-x-clip px-4">
-    <Hero />
+    <!-- Sección principal de presentación -->
+    <Hero language={language} />
 
-    <div
-      class="mx-auto flex w-full flex-col gap-20 pt-20 pb-14 sm:gap-24 sm:pt-24 sm:pb-20 lg:w-185 lg:gap-[7.5rem] lg:pt-[7.5rem]"
-    >
+    <!-- Contenedor de las secciones del portafolio -->
+    <div class="mx-auto flex w-full flex-col gap-20 pt-20 pb-14 sm:gap-24 sm:pt-24 sm:pb-20 lg:w-185 lg:gap-30 lg:pt-30">
       <div data-reveal-section>
-        <ProjectGrid />
+        <ProjectGrid language={language} />
       </div>
+
       <div data-reveal-section>
-        <Experience />
+        <Experience language={language} />
       </div>
+
       <div data-reveal-section>
-        <AboutMe />
+        <AboutMe language={language} />
       </div>
+
       <div data-reveal-section>
-        <Stack />
+        <Stack language={language} />
       </div>
     </div>
   </main>
 </Layout>
 
 <style>
+  /*
+   * Estado inicial de las secciones.
+   * Permanecen ocultas hasta entrar en la pantalla.
+   */
   :global(.reveal-sections [data-reveal-section]) {
     opacity: 0;
     filter: blur(5px);
@@ -42,12 +67,14 @@ import Layout from "../layouts/Layout.astro";
       transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  /* Estado visible después de activar la animación */
   :global(.reveal-sections [data-reveal-section].is-visible) {
     opacity: 1;
     filter: blur(0);
     transform: translateY(0);
   }
 
+  /* Desactiva el movimiento cuando el usuario lo prefiere */
   @media (prefers-reduced-motion: reduce) {
     :global(.reveal-sections [data-reveal-section]) {
       opacity: 1;
@@ -59,24 +86,41 @@ import Layout from "../layouts/Layout.astro";
 </style>
 
 <script>
+  /*
+   * Detecta si el usuario prefiere reducir las animaciones y obtiene todas las secciones que deben aparecer al hacer scroll.
+   */
   const reducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   ).matches;
+
   const revealSections = document.querySelectorAll<HTMLElement>(
     "[data-reveal-section]",
   );
 
+  /*
+   * Muestra directamente las secciones cuando las animaciones están desactivadas o el navegador no soporta IntersectionObserver.
+   */
   if (reducedMotion || !("IntersectionObserver" in window)) {
-    revealSections.forEach((section) => section.classList.add("is-visible"));
+    revealSections.forEach((section) => {
+      section.classList.add("is-visible");
+    });
   } else {
+    /*
+     * Activa los estilos iniciales de la animación solamente cuando IntersectionObserver está disponible.
+     */
     document.documentElement.classList.add("reveal-sections");
 
+    /*
+     * Observa cada sección y la muestra cuando entra parcialmente en el área visible de la pantalla.
+     */
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
 
           entry.target.classList.add("is-visible");
+
+          /* Deja de observarla una vez que ya fue mostrada */
           observer.unobserve(entry.target);
         });
       },
@@ -86,6 +130,9 @@ import Layout from "../layouts/Layout.astro";
       },
     );
 
-    revealSections.forEach((section) => observer.observe(section));
+    /* Comienza a observar todas las secciones */
+    revealSections.forEach((section) => {
+      observer.observe(section);
+    });
   }
 </script>

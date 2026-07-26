@@ -1,105 +1,207 @@
 ---
+/* Estilos globales */
 import "../../styles/global.css";
+
+/* Componentes utilizados en el catálogo */
 import ProjectCard from "../../components/projects/ProjectCard.astro";
-import { projects } from "../../data/projects";
 import Layout from "../../layouts/Layout.astro";
 
-const categoryLabels: Record<string, string> = {
-  mobile: "Móvil",
-  ai: "Inteligencia artificial",
-  web: "Web",
-};
+/* Datos y sistema de idiomas */
+import { getProjects } from "../../data/projects";
+import type { Language } from "../../i18n/config";
+import { getTranslations } from "../../i18n/utils";
 
-const categories = [...new Set(projects.map((project) => project.category))].map((value) => ({
+/* Propiedades que puede recibir la página */
+interface Props {
+  language?: Language;
+}
+
+/* Idioma actual y contenido correspondiente */
+const { language = "es" } = Astro.props;
+const t = getTranslations(language);
+const projects = getProjects(language);
+
+/* Traducciones de las categorías */
+const categoryLabels: Record<string, string> =
+  t.projects.categoryLabels;
+
+/* Obtiene las categorías disponibles sin repetirlas y les asigna su nombre traducido */
+const categories = [
+  ...new Set(projects.map((project) => project.category)),
+].map((value) => ({
   value,
   label: categoryLabels[value] ?? value,
 }));
 ---
 
-<Layout title="Proyectos — Kendall Calderón">
-  <main data-project-catalog class="mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-3 sm:px-6 sm:pb-24 sm:pt-5">
+<Layout title={t.metadata.projects} language={language}>
+  <main
+    data-project-catalog
+    class="mx-auto w-full max-w-6xl flex-1 px-4 pt-3 pb-16 sm:px-6 sm:pt-5 sm:pb-24"
+  >
+    <!-- Encabezado del catálogo -->
     <header class="mx-auto max-w-5xl text-center">
       <h1 class="projects-title text-3xl font-bold tracking-tight sm:text-4xl">
-        Proyectos
+        {t.projects.title}
       </h1>
 
       <p class="mx-auto mt-2 max-w-3xl text-sm leading-6 text-zinc-400 sm:text-base">
-        Una selección de proyectos personales que reflejan mi forma de aprender, resolver problemas y construir con tecnología.
+        {t.projects.catalogDescription}
       </p>
     </header>
 
-    {projects.length > 0 ? (
-      <>
-        <div class="mt-8 sm:flex sm:justify-center">
+    {
+      projects.length > 0 ? (
+        <>
+          <!-- Filtros por categoría -->
+          <div class="mt-8 sm:flex sm:justify-center">
+            <div
+              class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:inline-flex sm:min-w-max sm:flex-nowrap"
+              data-project-filters
+              role="group"
+              aria-label={t.projects.filterAria}
+            >
+              <button
+                type="button"
+                data-filter="all"
+                class="filter-tab is-active"
+                aria-pressed="true"
+              >
+                {t.projects.all}
+              </button>
+
+              {categories.map((category) => (
+                <>
+                  <span
+                    class="font-mono text-xs text-sky-400/70"
+                    aria-hidden="true"
+                  >
+                    /
+                  </span>
+
+                  <button
+                    type="button"
+                    data-filter={category.value}
+                    class="filter-tab"
+                    aria-pressed="false"
+                  >
+                    {category.label}
+                  </button>
+                </>
+              ))}
+            </div>
+          </div>
+
+          <!-- Cuadrícula de proyectos -->
           <div
-            class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:inline-flex sm:min-w-max sm:flex-nowrap"
-            data-project-filters
-            role="group"
-            aria-label="Filtrar proyectos por categoría"
+            class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            data-project-grid
           >
-            <button type="button" data-filter="all" class="filter-tab is-active" aria-pressed="true">
-              Todos
-            </button>
-            {categories.map((category) => (
-              <>
-                <span class="font-mono text-xs text-sky-400/70" aria-hidden="true">/</span>
-                <button type="button" data-filter={category.value} class="filter-tab" aria-pressed="false">
-                  {category.label}
-                </button>
-              </>
+            {projects.map((project) => (
+              <div
+                data-project-item
+                data-category={project.category}
+              >
+                <ProjectCard
+                  project={project}
+                  language={language}
+                />
+              </div>
             ))}
           </div>
-        </div>
 
-        <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-project-grid>
-          {projects.map((project, index) => (
-            <div data-project-item data-category={project.category}>
-              <ProjectCard project={project} index={index} />
-            </div>
-          ))}
-        </div>
+          <!-- Mensaje mostrado cuando un filtro no tiene resultados -->
+          <p
+            class="mt-12 hidden text-center text-sm text-zinc-500"
+            data-empty-message
+          >
+            {t.projects.emptyCategory}
+          </p>
+        </>
+      ) : (
+        <div
+          class="mt-12 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-zinc-800 py-20 text-center"
+        >
+          <span
+            class="font-mono text-2xl text-zinc-700"
+            aria-hidden="true"
+          >
+            {"</>"}
+          </span>
 
-        <p class="mt-12 hidden text-center text-sm text-zinc-500" data-empty-message>
-          No hay proyectos en esta categoría todavía.
-        </p>
-      </>
-    ) : (
-      <div class="mt-12 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-zinc-800 py-20 text-center">
-        <span class="font-mono text-2xl text-zinc-700" aria-hidden="true">{"</>"}</span>
-        <p class="text-sm text-zinc-500">Próximamente se publicarán nuevos proyectos.</p>
-      </div>
-    )}
+          <p class="text-sm text-zinc-500">
+            {t.projects.newProjectsSoon}
+          </p>
+        </div>
+      )
+    }
   </main>
 </Layout>
 
 <script>
-  const filterButtons = document.querySelectorAll<HTMLButtonElement>("[data-project-filters] [data-filter]");
-  const items = document.querySelectorAll<HTMLElement>("[data-project-item]");
-  const emptyMessage = document.querySelector<HTMLElement>("[data-empty-message]");
+  /* Elementos utilizados por el sistema de filtros */
+  const filterButtons =
+    document.querySelectorAll<HTMLButtonElement>(
+      "[data-project-filters] [data-filter]",
+    );
 
+  const items = document.querySelectorAll<HTMLElement>(
+    "[data-project-item]",
+  );
+
+  const emptyMessage =
+    document.querySelector<HTMLElement>(
+      "[data-empty-message]",
+    );
+
+  /*
+   * Filtra los proyectos al seleccionar una categoría y actualiza visualmente el botón activo.
+   */
   filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const filter = button.dataset.filter;
 
-      filterButtons.forEach((b) => {
-        const isActive = b === button;
-        b.classList.toggle("is-active", isActive);
-        b.setAttribute("aria-pressed", String(isActive));
+      /* Actualiza el estado de los botones */
+      filterButtons.forEach((currentButton) => {
+        const isActive = currentButton === button;
+
+        currentButton.classList.toggle(
+          "is-active",
+          isActive,
+        );
+
+        currentButton.setAttribute(
+          "aria-pressed",
+          String(isActive),
+        );
       });
 
+      /* Muestra únicamente los proyectos de la categoría seleccionada */
       let visibleCount = 0;
+
       items.forEach((item) => {
-        const matches = filter === "all" || item.dataset.category === filter;
+        const matches =
+          filter === "all" ||
+          item.dataset.category === filter;
+
         item.classList.toggle("hidden", !matches);
-        if (matches) visibleCount++;
+
+        if (matches) {
+          visibleCount++;
+        }
       });
 
-      emptyMessage?.classList.toggle("hidden", visibleCount > 0);
+      /* Muestra un mensaje cuando no existen coincidencias */
+      emptyMessage?.classList.toggle(
+        "hidden",
+        visibleCount > 0,
+      );
     });
   });
 </script>
 
 <style>
+  /* Título principal del catálogo */
   .projects-title {
     color: rgb(56 189 248);
     animation: projects-title-glow 8s ease-in-out infinite;
@@ -118,6 +220,7 @@ const categories = [...new Set(projects.map((project) => project.category))].map
     }
   }
 
+  /* Botones utilizados para filtrar las categorías */
   .filter-tab {
     position: relative;
     padding: 0.45rem 0.15rem;
@@ -127,6 +230,7 @@ const categories = [...new Set(projects.map((project) => project.category))].map
     transition: color 250ms ease;
   }
 
+  /* Línea decorativa inferior */
   .filter-tab::after {
     position: absolute;
     right: 18%;
@@ -153,6 +257,7 @@ const categories = [...new Set(projects.map((project) => project.category))].map
     color: rgb(250 250 250);
   }
 
+  /* Reduce las animaciones cuando el usuario lo solicita */
   @media (prefers-reduced-motion: reduce) {
     .projects-title {
       animation: none;

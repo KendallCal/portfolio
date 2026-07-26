@@ -1,7 +1,22 @@
 ---
+/* Tecnologías utilizadas en la nube interactiva */
 import { technologies } from "../data/technologies";
 
-const iconModules = import.meta.glob<{ default: any }>("./icons/*.astro", { eager: true });
+/* Sistema de idiomas */
+import type { Language } from "../i18n/config";
+import { getTranslations } from "../i18n/utils";
+
+/* Propiedades que puede recibir el componente */
+interface Props {
+  language?: Language;
+}
+/* Idioma actual y traducciones */
+const { language = "es" } = Astro.props;
+const t = getTranslations(language);
+
+const iconModules = import.meta.glob<{ default: any }>("./icons/*.astro", {
+  eager: true,
+});
 
 const stack = technologies.map((item) => {
   const iconModule = iconModules[`./icons/${item.icon}.astro`];
@@ -29,6 +44,17 @@ const techColors: Record<string, string> = {
   nodejs: "5fa04e",
   docker: "2496ed",
   git: "f05032",
+  c: "a179dc",
+  java: "e76f00",
+  css: "1572b6",
+  html: "e34f26",
+  openai: "ffffff",
+  claude: "d97757",
+  opencode: "ffffff",
+  mysql: "4479a1",
+  vsa: "38bdf8",
+  vsm: "38bdf8",
+  javascript: "f7df1e",
 };
 
 function colorFor(name: string) {
@@ -37,35 +63,41 @@ function colorFor(name: string) {
 }
 ---
 
+<!-- Sección de tecnologías -->
 <section class="stack" id="stack" aria-labelledby="stack-title">
   <header class="stack__header">
-    <h2 id="stack-title">Tecnologías</h2>
-    <p>Una selección de herramientas y tecnologías que utilizo en mis proyectos para explorar ideas, resolver problemas y experimentar en distintas áreas de la tecnología.</p>
+    <h2 id="stack-title">{t.stack.title}</h2>
+    <p>{t.stack.description}</p>
   </header>
 
   <div class="technology-cloud">
     <div class="technology-cloud__glow" aria-hidden="true"></div>
     <svg class="technology-links" aria-hidden="true"></svg>
 
-    <ul class="technology-list" aria-label="Tecnologías y herramientas">
-      {stack.map(({ name, Icon, size, position }) => (
-        <li
-          class={`technology technology--${size}`}
-          data-size={size}
-          data-color={colorFor(name)}
-          style={`--x: ${position.x}%; --y: ${position.y}%;`}
-        >
-          <div class="technology__motion">
-            <span class="technology__icon" aria-hidden="true"><Icon /></span>
-            <span class="technology__name">{name}</span>
-          </div>
-        </li>
-      ))}
+    <ul class="technology-list" aria-label={t.stack.aria}>
+      {
+        stack.map(({ name, Icon, size, position }) => (
+          <li
+            class={`technology technology--${size}`}
+            data-size={size}
+            data-color={colorFor(name)}
+            style={`--x: ${position.x}%; --y: ${position.y}%;`}
+          >
+            <div class="technology__motion">
+              <span class="technology__icon" aria-hidden="true">
+                <Icon />
+              </span>
+              <span class="technology__name">{name}</span>
+            </div>
+          </li>
+        ))
+      }
     </ul>
   </div>
 </section>
 
 <style>
+  /* Estilos de la nube interactiva */
   .stack {
     width: 100%;
     scroll-margin-top: 6rem;
@@ -99,12 +131,20 @@ function colorFor(name: string) {
     position: relative;
     overflow: hidden;
     width: 100%;
-    height: 25rem;
+    height: 29rem;
     border: 1px solid rgb(39 39 42 / 0.78);
     border-radius: 1.25rem;
     background:
-      radial-gradient(circle at 20% 24%, rgb(14 165 233 / 0.045), transparent 24%),
-      radial-gradient(circle at 79% 70%, rgb(139 92 246 / 0.04), transparent 25%),
+      radial-gradient(
+        circle at 20% 24%,
+        rgb(14 165 233 / 0.045),
+        transparent 24%
+      ),
+      radial-gradient(
+        circle at 79% 70%,
+        rgb(139 92 246 / 0.04),
+        transparent 25%
+      ),
       #0b0c13;
     isolation: isolate;
   }
@@ -113,19 +153,25 @@ function colorFor(name: string) {
     position: absolute;
     z-index: 0;
     inset: 0;
-    background-image: radial-gradient(rgb(113 113 122 / 0.22) 0.6px, transparent 0.6px);
+    background-image: radial-gradient(
+      rgb(113 113 122 / 0.22) 0.6px,
+      transparent 0.6px
+    );
     background-size: 28px 28px;
     content: "";
     mask-image: radial-gradient(ellipse at center, black, transparent 76%);
   }
 
-  /* Viñeta: oscurece los bordes para simular profundidad de campo,
-     como si el "acuario" tuviera un centro de foco. */
+  /* Viñeta: oscurece los bordes para simular profundidad de campo, como si el "acuario" tuviera un centro de foco. */
   .technology-cloud::after {
     position: absolute;
     z-index: 4;
     inset: 0;
-    background: radial-gradient(ellipse at center, transparent 52%, rgb(3 3 5 / 0.65) 100%);
+    background: radial-gradient(
+      ellipse at center,
+      transparent 52%,
+      rgb(3 3 5 / 0.65) 100%
+    );
     content: "";
     pointer-events: none;
   }
@@ -191,7 +237,8 @@ function colorFor(name: string) {
   }
 
   .technology--large .technology__icon {
-    filter: drop-shadow(0 0 10px rgb(56 189 248 / 0.12)) drop-shadow(0 6px 14px rgb(0 0 0 / 0.45));
+    filter: drop-shadow(0 0 10px rgb(56 189 248 / 0.12))
+      drop-shadow(0 6px 14px rgb(0 0 0 / 0.45));
   }
 
   .technology__motion {
@@ -209,7 +256,9 @@ function colorFor(name: string) {
     align-items: center;
     justify-content: center;
     filter: drop-shadow(0 6px 14px rgb(0 0 0 / 0.45));
-    transition: transform 220ms ease, filter 220ms ease;
+    transition:
+      transform 220ms ease,
+      filter 220ms ease;
   }
 
   .technology__icon :global(svg) {
@@ -233,7 +282,8 @@ function colorFor(name: string) {
 
   .technology:hover .technology__icon {
     transform: scale(1.2);
-    filter: drop-shadow(0 0 18px rgb(56 189 248 / 0.5)) drop-shadow(0 6px 14px rgb(0 0 0 / 0.45));
+    filter: drop-shadow(0 0 18px rgb(56 189 248 / 0.5))
+      drop-shadow(0 6px 14px rgb(0 0 0 / 0.45));
   }
 
   .technology:hover .technology__name {
@@ -302,12 +352,15 @@ function colorFor(name: string) {
 </style>
 
 <script>
+  /* Lógica de animación de la nube de tecnologías */
   // Movimiento orgánico ("bacteria") + líneas de constelación entre íconos
   // cercanos + glow que toma el color de marca del ícono más próximo al cursor.
   const cloud = document.querySelector<HTMLElement>(".technology-cloud");
   const svg = document.querySelector<SVGSVGElement>(".technology-links");
   const items = document.querySelectorAll<HTMLLIElement>(".technology");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
   const isMobileLayout = window.matchMedia("(max-width: 559px)").matches;
 
   function hexToRgb(hex: string): [number, number, number] {
@@ -345,7 +398,8 @@ function colorFor(name: string) {
     items.forEach((li) => {
       const motion = li.querySelector<HTMLElement>(".technology__motion");
       if (!motion) return;
-      const profile = profileBySize[li.dataset.size ?? "medium"] ?? profileBySize.medium;
+      const profile =
+        profileBySize[li.dataset.size ?? "medium"] ?? profileBySize.medium;
       particles.push({
         motion,
         ox: 0,
@@ -468,19 +522,23 @@ function colorFor(name: string) {
           ? particles[nearestIdx].color
           : DEFAULT_COLOR;
 
-      currentColor = currentColor.map((c, k) => c + (target[k] - c) * 0.035) as [
-        number,
-        number,
-        number,
-      ];
+      currentColor = currentColor.map(
+        (c, k) => c + (target[k] - c) * 0.035,
+      ) as [number, number, number];
 
       cloud!.style.setProperty("--glow-r", String(Math.round(currentColor[0])));
       cloud!.style.setProperty("--glow-g", String(Math.round(currentColor[1])));
       cloud!.style.setProperty("--glow-b", String(Math.round(currentColor[2])));
 
       if (mouseX > -9000) {
-        cloud!.style.setProperty("--mx", `${((mouseX / bounds.width) * 100).toFixed(1)}%`);
-        cloud!.style.setProperty("--my", `${((mouseY / bounds.height) * 100).toFixed(1)}%`);
+        cloud!.style.setProperty(
+          "--mx",
+          `${((mouseX / bounds.width) * 100).toFixed(1)}%`,
+        );
+        cloud!.style.setProperty(
+          "--my",
+          `${((mouseY / bounds.height) * 100).toFixed(1)}%`,
+        );
       }
 
       raf = requestAnimationFrame(tick);
@@ -488,6 +546,8 @@ function colorFor(name: string) {
 
     raf = requestAnimationFrame(tick);
 
-    document.addEventListener("astro:before-swap", () => cancelAnimationFrame(raf));
+    document.addEventListener("astro:before-swap", () =>
+      cancelAnimationFrame(raf),
+    );
   }
 </script>

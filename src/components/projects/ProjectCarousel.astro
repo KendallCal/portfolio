@@ -1,14 +1,25 @@
 ---
+/* Datos y componentes utilizados por el carrusel */
 import type { Project } from "../../data/projects";
 import ChevronLeft from "../icons/Carousel-Chevron-Left.astro";
 import ChevronRight from "../icons/Carousel-Chevron-Right.astro";
 import ProjectCard from "./ProjectCard.astro";
 
+/* Sistema de idiomas */
+import type { Language } from "../../i18n/config";
+import { getTranslations } from "../../i18n/utils";
+
+/* Propiedades que recibe el componente */
 interface Props {
   projects: Project[];
+  language?: Language;
 }
 
-const { projects } = Astro.props;
+/* Proyectos, idioma y traducciones actuales */
+const { projects, language = "es" } = Astro.props;
+const t = getTranslations(language);
+
+/* Muestra el carrusel únicamente cuando existen más de dos proyectos */
 const hasControls = projects.length > 2;
 ---
 
@@ -17,9 +28,10 @@ const hasControls = projects.length > 2;
     <div
       class="relative mt-10"
       data-project-carousel
-      aria-roledescription="carrusel"
-      aria-label="Proyectos destacados"
+      aria-roledescription={t.projects.carouselRole}
+      aria-label={t.projects.featuredCarousel}
     >
+      <!-- Área visible del carrusel -->
       <div class="overflow-hidden" data-carousel-viewport>
         <div
           class="flex will-change-transform motion-reduce:transition-none"
@@ -27,28 +39,30 @@ const hasControls = projects.length > 2;
         >
           {projects.map((project) => (
             <div class="w-full shrink-0 sm:w-1/2 sm:px-3">
-              <ProjectCard project={project} />
+              <ProjectCard project={project} language={language} />
             </div>
           ))}
         </div>
       </div>
 
+      <!-- Botón para mostrar los proyectos anteriores -->
       <button
         type="button"
-        class="carousel-control absolute top-1/2 left-3 z-40 hidden -translate-y-1/2 sm:inline-flex sm:left-0 lg:-left-8"
+        class="carousel-control absolute top-1/2 left-3 z-40 hidden -translate-y-1/2 sm:left-0 sm:inline-flex lg:-left-8"
         data-carousel-previous
-        aria-label="Mostrar proyectos anteriores"
+        aria-label={t.projects.previousProjects}
       >
         <span class="[&_svg]:h-8 [&_svg]:w-4" aria-hidden="true">
           <ChevronLeft />
         </span>
       </button>
 
+      <!-- Botón para mostrar los siguientes proyectos -->
       <button
         type="button"
-        class="carousel-control absolute top-1/2 right-3 z-40 hidden -translate-y-1/2 sm:inline-flex sm:right-0 lg:-right-8"
+        class="carousel-control absolute top-1/2 right-3 z-40 hidden -translate-y-1/2 sm:right-0 sm:inline-flex lg:-right-8"
         data-carousel-next
-        aria-label="Mostrar proyectos siguientes"
+        aria-label={t.projects.nextProjects}
       >
         <span class="[&_svg]:h-8 [&_svg]:w-4" aria-hidden="true">
           <ChevronRight />
@@ -57,16 +71,20 @@ const hasControls = projects.length > 2;
     </div>
   ) : (
     <div class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2">
-      {projects.map((project) => <ProjectCard project={project} />)}
+      {projects.map((project) => (
+        <ProjectCard project={project} language={language} />
+      ))}
     </div>
   )
 }
 
 <style>
+  /* Movimiento horizontal del carrusel */
   [data-carousel-track] {
     transition: transform 550ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  /* Estilos generales de los controles */
   .carousel-control {
     width: 2.75rem;
     height: 4rem;
@@ -81,20 +99,24 @@ const hasControls = projects.length > 2;
       transform 200ms ease;
   }
 
+  /* Resalta los controles al pasar el cursor */
   .carousel-control:hover:not(:disabled) {
     color: rgb(14 165 233);
   }
 
+  /* Indicador visible para navegación con teclado */
   .carousel-control:focus-visible {
     outline: 2px solid rgb(56 189 248 / 0.65);
     outline-offset: 3px;
   }
 
+  /* Apariencia de los controles deshabilitados */
   .carousel-control:disabled {
     cursor: default;
     opacity: 0.25;
   }
 
+  /* Desactiva la transición cuando se reduce el movimiento */
   @media (prefers-reduced-motion: reduce) {
     [data-carousel-track] {
       transition: none;
@@ -103,66 +125,105 @@ const hasControls = projects.length > 2;
 </style>
 
 <script>
-  document.querySelectorAll<HTMLElement>("[data-project-carousel]").forEach(
-    (carousel) => {
+  /* Inicializa cada carrusel presente en la página */
+  document
+    .querySelectorAll<HTMLElement>("[data-project-carousel]")
+    .forEach((carousel) => {
+      /* Elementos principales del carrusel */
       const viewport = carousel.querySelector<HTMLElement>(
         "[data-carousel-viewport]",
       );
+
       const track = carousel.querySelector<HTMLElement>(
         "[data-carousel-track]",
       );
+
       const slides = Array.from(track?.children ?? []);
+
       const previous = carousel.querySelector<HTMLButtonElement>(
         "[data-carousel-previous]",
       );
+
       const next = carousel.querySelector<HTMLButtonElement>(
         "[data-carousel-next]",
       );
 
       if (!viewport || !track) return;
 
+      /* Estado actual del carrusel */
       let currentIndex = 0;
       let autoplayTimer: number | undefined;
       let touchStartX = 0;
       let touchDeltaX = 0;
+
       const AUTOPLAY_DELAY_MS = 5200;
 
+      /* Cantidad de proyectos visibles según el tamaño de pantalla */
       const visibleSlides = () =>
         window.matchMedia("(min-width: 640px)").matches ? 2 : 1;
 
+      /* Actualiza la posición y el estado de los controles */
       const update = () => {
         const visible = visibleSlides();
         const maxIndex = Math.max(0, slides.length - visible);
+
         currentIndex = Math.min(currentIndex, maxIndex);
+
         const step = viewport.clientWidth / visible;
 
-        track.style.transform = `translate3d(${-currentIndex * step}px, 0, 0)`;
-        if (previous) previous.disabled = currentIndex === 0;
-        if (next) next.disabled = currentIndex === maxIndex;
+        track.style.transform =
+          `translate3d(${-currentIndex * step}px, 0, 0)`;
+
+        if (previous) {
+          previous.disabled = currentIndex === 0;
+        }
+
+        if (next) {
+          next.disabled = currentIndex === maxIndex;
+        }
       };
 
+      /* Navega hacia el proyecto anterior */
       previous?.addEventListener("click", () => {
         currentIndex = Math.max(0, currentIndex - 1);
         update();
       });
 
+      /* Navega hacia el siguiente proyecto */
       next?.addEventListener("click", () => {
-        const maxIndex = Math.max(0, slides.length - visibleSlides());
-        currentIndex = Math.min(maxIndex, currentIndex + 1);
+        const maxIndex = Math.max(
+          0,
+          slides.length - visibleSlides(),
+        );
+
+        currentIndex = Math.min(
+          maxIndex,
+          currentIndex + 1,
+        );
+
         update();
       });
 
+      /* Detiene el desplazamiento automático */
       const stopAutoplay = () => {
-        if (autoplayTimer !== undefined) window.clearInterval(autoplayTimer);
+        if (autoplayTimer !== undefined) {
+          window.clearInterval(autoplayTimer);
+        }
+
         autoplayTimer = undefined;
       };
 
+      /* Activa el desplazamiento automático en dispositivos móviles */
       const startAutoplay = () => {
         stopAutoplay();
-        const isMobile = window.matchMedia("(max-width: 639px)").matches;
+
+        const isMobile =
+          window.matchMedia("(max-width: 639px)").matches;
+
         const reduceMotion = window.matchMedia(
           "(prefers-reduced-motion: reduce)",
         ).matches;
+
         if (!isMobile || reduceMotion || slides.length < 2) return;
 
         autoplayTimer = window.setInterval(() => {
@@ -171,41 +232,57 @@ const hasControls = projects.length > 2;
         }, AUTOPLAY_DELAY_MS);
       };
 
+      /* Registra el inicio del gesto táctil */
       viewport.addEventListener(
         "touchstart",
         (event) => {
           touchStartX = event.touches[0]?.clientX ?? 0;
           touchDeltaX = 0;
+
           stopAutoplay();
         },
         { passive: true },
       );
 
+      /* Calcula el desplazamiento horizontal del gesto */
       viewport.addEventListener(
         "touchmove",
         (event) => {
-          touchDeltaX = (event.touches[0]?.clientX ?? touchStartX) - touchStartX;
+          touchDeltaX =
+            (event.touches[0]?.clientX ?? touchStartX) -
+            touchStartX;
         },
         { passive: true },
       );
 
+      /* Cambia de proyecto cuando finaliza el gesto */
       viewport.addEventListener("touchend", () => {
         if (Math.abs(touchDeltaX) >= 45) {
-          const maxIndex = Math.max(0, slides.length - visibleSlides());
+          const maxIndex = Math.max(
+            0,
+            slides.length - visibleSlides(),
+          );
+
           currentIndex =
             touchDeltaX < 0
               ? Math.min(maxIndex, currentIndex + 1)
               : Math.max(0, currentIndex - 1);
+
           update();
         }
+
         startAutoplay();
       });
 
+      /* Ajusta el carrusel cuando cambia el tamaño del contenedor */
       const resizeObserver = new ResizeObserver(update);
       resizeObserver.observe(viewport);
+
+      /* Inicializa posición y reproducción automática */
       update();
       startAutoplay();
+
+      /* Reinicia el autoplay al cambiar el tamaño de la ventana */
       window.addEventListener("resize", startAutoplay);
-    },
-  );
+    });
 </script>

@@ -1,46 +1,67 @@
 ---
+/* Sistema de idiomas */
+import type { Language } from "../i18n/config";
+import { getTranslations } from "../i18n/utils";
+
+/* Propiedades que puede recibir el componente */
+interface Props {
+  language?: Language;
+}
+
+/* Idioma actual y traducciones correspondientes */
+const { language = "es" } = Astro.props;
+const t = getTranslations(language);
+
+/* Calcula el tiempo transcurrido desde una fecha de inicio */
 function calcYears(startDate: string, endDate?: string): string {
   const start = new Date(startDate);
   const end = endDate ? new Date(endDate) : new Date();
+
   const months =
     (end.getFullYear() - start.getFullYear()) * 12 +
     (end.getMonth() - start.getMonth());
+
   const years = Math.floor(months / 12);
   const rem = months % 12;
-  if (years === 0) return `${rem} mes${rem !== 1 ? "es" : ""}`;
-  if (rem === 0) return `${years} año${years !== 1 ? "s" : ""}`;
-  return `${years} año${years !== 1 ? "s" : ""} ${rem} mes${rem !== 1 ? "es" : ""}`;
+
+  const yearLabel =
+    years === 1 ? t.experience.year : t.experience.years;
+
+  const monthLabel =
+    rem === 1 ? t.experience.month : t.experience.months;
+
+  if (years === 0) return `${rem} ${monthLabel}`;
+  if (rem === 0) return `${years} ${yearLabel}`;
+
+  return `${years} ${yearLabel} ${rem} ${monthLabel}`;
 }
 
+/* Experiencias profesionales mostradas en la línea de tiempo */
 const experiences = [
   {
-    role: "Mentor Académico en Proyectos de TI",
-    company: "Profesional Independiente",
-    date: "Enero 2025 - Actualidad",
+    ...t.experience.items[0],
     startDate: "2025-01-01",
-    description:
-      "Acompaño a estudiantes universitarios en proyectos de programación, software y redes, explicando conceptos técnicos de forma clara y guiando la estructura, lógica y defensa de sus entregas.",
   },
   {
-    role: "Técnico de Soporte TI",
-    company: "Emprendimiento Personal",
-    date: "Noviembre 2021 - Actualidad",
+    ...t.experience.items[1],
     startDate: "2021-11-01",
-    description:
-      "Brindo soporte técnico, diagnóstico y mantenimiento de computadoras, laptops y dispositivos móviles, resolviendo fallas de hardware, software, rendimiento y conectividad.",
   },
 ];
 ---
 
 <section class="w-full scroll-mt-24" id="experience">
-  <h2 class="text-2xl font-bold text-white sm:text-3xl">Experiencia</h2>
+  <!-- Título de la sección -->
+  <h2 class="text-2xl font-bold text-white sm:text-3xl">
+    {t.experience.title}
+  </h2>
 
+  <!-- Línea de tiempo de experiencia -->
   <article class="mt-8 px-3 sm:mt-10 sm:px-2">
     <ul class="relative border-l border-zinc-700">
       {
         experiences.map((exp) => (
           <li class="mb-8 ml-7 last:mb-0 sm:ml-6 md:mb-6">
-            {/* Dot */}
+            <!-- Indicador de la experiencia -->
             <span class="absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-700">
               <svg
                 aria-hidden="true"
@@ -58,24 +79,31 @@ const experiences = [
               </svg>
             </span>
 
-            {/* Role + Company */}
+            <!-- Puesto y empresa -->
             <h3 class="mb-1 flex flex-col items-start gap-0.5 text-base leading-6 font-semibold text-sky-400 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-2 sm:gap-y-1 sm:text-lg">
               <span>{exp.role}</span>
-              <span class="hidden font-normal text-white sm:inline">-</span>
+
+              <span class="hidden font-normal text-white sm:inline">
+                -
+              </span>
+
               <span class="block text-sm font-semibold text-orange-300">
                 {exp.company}
               </span>
             </h3>
 
-            {/* Date + Years badge */}
+            <!-- Fecha y duración -->
             <div class="mb-2 flex flex-wrap items-center gap-2">
-              <time class="text-sm text-zinc-400">{exp.date}</time>
+              <time class="text-sm text-zinc-400">
+                {exp.date}
+              </time>
+
               <span class="rounded-full bg-sky-400/10 px-2 py-0.5 text-xs font-medium text-sky-400">
                 {calcYears(exp.startDate)}
               </span>
             </div>
 
-            {/* Description */}
+            <!-- Descripción de la experiencia -->
             <p class="max-w-2xl text-pretty text-sm leading-7 text-zinc-300 sm:text-base sm:leading-relaxed">
               {exp.description}
             </p>

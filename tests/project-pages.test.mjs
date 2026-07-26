@@ -119,13 +119,13 @@ test("the gallery is a data-driven carousel with optional privacy-enhanced video
 
   assert.match(dataSource, /type ProjectMedia/);
   assert.match(dataSource, /interface ProjectCaseStudy/);
-  assert.match(dataSource, /eduvial-simulator-selection-concept\.png/);
+  assert.match(dataSource, /eduvial-simulator-selection-concept\.webp/);
   assert.match(dataSource, /type: "youtube"/);
   assert.match(dataSource, /platforms: ProjectPlatform\[\]/);
   assert.match(gallerySource, /youtube-nocookie\.com\/embed/);
   assert.match(gallerySource, /data-gallery-next/);
   assert.match(gallerySource, /data-gallery-prev/);
-  assert.match(gallerySource, /aria-label="Siguiente diapositiva"/);
+  assert.match(gallerySource, /aria-label=\{t\.detail\.nextSlide\}/);
   assert.match(gallerySource, /motion-reduce:transition-none/);
   assert.match(gallerySource, /touchstart/);
   assert.doesNotMatch(gallerySource, /Vista del proyecto/);

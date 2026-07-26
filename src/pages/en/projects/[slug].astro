@@ -1,0 +1,21 @@
+---
+/* Página base reutilizada para los detalles de proyectos en inglés */
+import ProjectPage from "../../projects/[slug].astro";
+
+/* Obtiene todos los proyectos disponibles */
+import { getProjects } from "../../../data/projects";
+
+/* Genera una ruta estática para cada proyecto */
+export function getStaticPaths() {
+  return getProjects("en").map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+/* Proyecto correspondiente a la ruta actual */
+const { project } = Astro.props;
+---
+
+<!-- Renderiza el detalle del proyecto utilizando el idioma inglés -->
+<ProjectPage project={project} language="en" />

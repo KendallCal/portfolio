@@ -1,5 +1,8 @@
 ---
+/* Tipo de tecnología recibido por el componente */
 import type { Tech } from "../../data/projects";
+
+/* Iconos disponibles para las tecnologías */
 import AWSIcon from "../icons/AWS.astro";
 import FastAPIIcon from "../icons/FastAPI.astro";
 import FlutterIcon from "../icons/Flutter.astro";
@@ -9,11 +12,15 @@ import PostgreSQLIcon from "../icons/PostgreSQL.astro";
 import SupabaseIcon from "../icons/Supabase.astro";
 import TypeScriptIcon from "../icons/TypeScript.astro";
 
+/* Propiedades que recibe el componente */
 interface Props {
   tech: Tech;
 }
 
+/* Tecnología actual */
 const { tech } = Astro.props;
+
+/* Relación entre cada nombre de icono y su componente */
 const iconMap = {
   aws: AWSIcon,
   fastapi: FastAPIIcon,
@@ -24,19 +31,37 @@ const iconMap = {
   supabase: SupabaseIcon,
   typescript: TypeScriptIcon,
 } as const;
-const normalizedIcon = tech.icon.toLowerCase().replace(/[^a-z0-9]/g, "");
-const TechIcon = iconMap[normalizedIcon as keyof typeof iconMap];
+
+/* Normaliza el nombre para buscar el icono correspondiente */
+const normalizedIcon = tech.icon
+  .toLowerCase()
+  .replace(/[^a-z0-9]/g, "");
+
+/* Selecciona el icono de la tecnología */
+const TechIcon =
+  iconMap[normalizedIcon as keyof typeof iconMap];
 ---
 
+<!-- Tecnología utilizada por el proyecto -->
 <span class="inline-flex items-center gap-2.5 text-sm text-zinc-400">
-  {TechIcon ? (
-    <span class="inline-flex size-6 items-center justify-center [&_svg]:size-5" aria-hidden="true">
-      <TechIcon />
-    </span>
-  ) : (
-    <span class="inline-flex size-6 items-center justify-center text-[10px] font-medium text-zinc-500" aria-hidden="true">
-      {tech.name.slice(0, 2).toUpperCase()}
-    </span>
-  )}
+  {
+    TechIcon ? (
+      <span
+        class="inline-flex size-6 items-center justify-center [&_svg]:size-5"
+        aria-hidden="true"
+      >
+        <TechIcon />
+      </span>
+    ) : (
+      <span
+        class="inline-flex size-6 items-center justify-center text-[10px] font-medium text-zinc-500"
+        aria-hidden="true"
+      >
+        {tech.name.slice(0, 2).toUpperCase()}
+      </span>
+    )
+  }
+
+  <!-- Nombre de la tecnología -->
   <span>{tech.name}</span>
 </span>

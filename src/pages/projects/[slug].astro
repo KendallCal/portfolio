@@ -1,55 +1,90 @@
 ---
+/* Estilos globales */
 import "../../styles/global.css";
+
+/* Iconos utilizados en los enlaces del proyecto */
 import GitHubIcon from "../../components/icons/GitHub.astro";
 import OpenIcon from "../../components/icons/Open.astro";
+
+/* Componentes principales de la página */
 import ProjectGallery from "../../components/projects/ProjectGallery.astro";
 import ProjectTechnology from "../../components/projects/ProjectTechnology.astro";
-import { isAvailableProjectUrl, projects, type Project, type ProjectPlatform } from "../../data/projects";
-import Layout from "../../layouts/Layout.astro";
 
+/* Datos, tipos y utilidades de los proyectos */
+import {
+  getProjects,
+  isAvailableProjectUrl,
+  projects as baseProjects,
+  type Project,
+  type ProjectPlatform,
+} from "../../data/projects";
+
+/* Layout y sistema de idiomas */
+import Layout from "../../layouts/Layout.astro";
+import type { Language } from "../../i18n/config";
+import { getTranslations, localizePath } from "../../i18n/utils";
+
+/* Genera una página estática para cada proyecto */
 export function getStaticPaths() {
-  return projects.map((project) => ({
+  return baseProjects.map((project) => ({
     params: { slug: project.slug },
     props: { project },
   }));
 }
 
+/* Propiedades que recibe la página */
 interface Props {
   project: Project;
+  language?: Language;
 }
 
-const { project } = Astro.props;
+/* Proyecto actual, idioma y traducciones */
+const { project, language = "es" } = Astro.props;
+const t = getTranslations(language);
+
+/* Lista de proyectos utilizada en la navegación */
+const projects = getProjects(language);
 const projectIndex = projects.findIndex(({ slug }) => slug === project.slug);
+
+/* Proyecto siguiente dentro del catálogo */
 const nextProject = projects.length > 1
   ? projects[(projectIndex + 1) % projects.length]
   : undefined;
 
+/* Texto y color asociados a cada estado */
 const statusMap = {
-  completed: { label: "Completado", dotClass: "bg-emerald-400" },
-  "in-progress": { label: "En desarrollo", dotClass: "bg-amber-400" },
-  archived: { label: "Archivado", dotClass: "bg-zinc-500" },
+  completed: { label: t.detail.statuses.completed, dotClass: "bg-emerald-400" },
+  "in-progress": { label: t.detail.statuses.inProgress, dotClass: "bg-amber-400" },
+  archived: { label: t.detail.statuses.archived, dotClass: "bg-zinc-500" },
 } as const;
 
+/* Nombre traducido de cada plataforma */
 const platformLabels: Record<ProjectPlatform, string> = {
-  web: "Web",
-  android: "Móvil",
-  ios: "iOS",
-  desktop: "Escritorio",
+  web: t.detail.platforms.web,
+  android: t.detail.platforms.android,
+  ios: t.detail.platforms.ios,
+  desktop: t.detail.platforms.desktop,
 };
 
+/* Estado actual y enlaces disponibles */
 const status = statusMap[project.status];
-const liveUrl = isAvailableProjectUrl(project.liveUrl) ? project.liveUrl : undefined;
-const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undefined;
+const liveUrl = isAvailableProjectUrl(project.liveUrl)
+  ? project.liveUrl
+  : undefined;
+const repoUrl = isAvailableProjectUrl(project.repoUrl)
+  ? project.repoUrl
+  : undefined;
 ---
 
-<Layout title={`${project.title} — Proyectos`} showFooter={false}>
+<Layout title={`${project.title} — ${t.metadata.projectSuffix}`} showFooter={false} language={language}>
   <main
     class="mx-auto w-full max-w-5xl flex-1 px-4 pb-10 pt-5 sm:px-6 sm:pb-12 sm:pt-8"
     style={`--project-accent: ${project.accentColor};`}
   >
+    <!-- Encabezado principal del proyecto -->
     <header class="mx-auto max-w-4xl border-b border-zinc-800/80 pb-9 sm:pb-10">
       <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <p class="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-[var(--project-accent)]">
+        <p class="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-(--project-accent)">
           {project.categoryLabel}
         </p>
         <span class="text-zinc-700" aria-hidden="true">/</span>
@@ -78,17 +113,17 @@ const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undef
       )}
 
       {(repoUrl || liveUrl) && (
-        <div class="project-actions mt-6 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3" aria-label="Enlaces del proyecto">
+        <div class="project-actions mt-6 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3" aria-label={t.detail.projectLinks}>
           {liveUrl && (
             <a href={liveUrl} target="_blank" rel="noopener noreferrer" class="project-action">
-              Ver proyecto
+              {t.detail.viewProject}
               <span class="[&_svg]:size-3.5" aria-hidden="true"><OpenIcon /></span>
             </a>
           )}
 
           {repoUrl && (
             <a href={repoUrl} target="_blank" rel="noopener noreferrer" class="project-action">
-              Ver repositorio
+              {t.detail.viewRepository}
               <GitHubIcon class="size-3.5" />
             </a>
           )}
@@ -96,18 +131,22 @@ const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undef
       )}
     </header>
 
+    <!-- Galería de imágenes del proyecto -->
     <div class="mx-auto mt-9 max-w-3xl sm:mt-10">
       <ProjectGallery
         title={project.title}
         image={project.image}
         media={project.media}
+        language={language}
       />
     </div>
 
+    <!-- Contenido principal e información complementaria -->
     <div class="mx-auto mt-14 grid max-w-4xl gap-12 lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-14">
       <div class="contents lg:order-1 lg:block lg:space-y-12">
+        <!-- Resumen del proyecto -->
         <section class="order-2" aria-labelledby="project-summary-title">
-          <h2 id="project-summary-title" class="text-xl font-semibold tracking-tight text-white">Resumen del proyecto</h2>
+          <h2 id="project-summary-title" class="text-xl font-semibold tracking-tight text-white">{t.detail.summary}</h2>
           {project.caseStudy?.summary?.length ? (
             <div class="mt-4 space-y-4 text-sm leading-7 text-zinc-400 sm:text-base sm:leading-8">
               {project.caseStudy.summary.map((paragraph) => <p>{paragraph}</p>)}
@@ -119,14 +158,15 @@ const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undef
           )}
         </section>
 
+        <!-- Funcionalidades principales -->
         <section class="order-3" aria-labelledby="project-features-title">
-          <h2 id="project-features-title" class="text-xl font-semibold tracking-tight text-white">Lo que ofrece</h2>
+          <h2 id="project-features-title" class="text-xl font-semibold tracking-tight text-white">{t.detail.offers}</h2>
 
           {project.features && project.features.length > 0 ? (
             <ul class="mt-5">
               {project.features.map((feature, index) => (
                 <li class="grid grid-cols-[1.75rem_1fr] items-center gap-3 border-t border-zinc-800/70 py-3.5 text-sm leading-6 text-zinc-400">
-                  <span class="font-mono text-xs font-medium tabular-nums text-[var(--project-accent)]" aria-hidden="true">
+                  <span class="font-mono text-xs font-medium tabular-nums text-(--project-accent)" aria-hidden="true">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span>{feature}</span>
@@ -134,13 +174,13 @@ const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undef
               ))}
             </ul>
           ) : (
-            <p class="mt-5 text-sm leading-7 text-zinc-400">El alcance funcional se encuentra en desarrollo.</p>
+            <p class="mt-5 text-sm leading-7 text-zinc-400">{t.detail.scopeFallback}</p>
           )}
         </section>
 
         {project.techs.length > 0 && (
           <section class="order-5 border-t border-zinc-800/80 pt-8" aria-labelledby="project-technologies-title">
-            <h2 id="project-technologies-title" class="text-xl font-semibold tracking-tight text-white">Tecnologías</h2>
+            <h2 id="project-technologies-title" class="text-xl font-semibold tracking-tight text-white">{t.detail.technologies}</h2>
             <ul class="mt-5 flex flex-wrap gap-x-6 gap-y-4">
               {project.techs.map((tech) => (
                 <li>
@@ -153,12 +193,13 @@ const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undef
 
       </div>
 
+      <!-- Estado, categoría, plataformas y contribuciones -->
       <aside class="contents lg:order-2 lg:block lg:self-stretch lg:border-l lg:border-zinc-800/80 lg:pl-7" aria-labelledby="project-information-title">
         <section class="order-1 border-y border-zinc-800/80 py-5 lg:border-0 lg:py-0">
-          <h2 id="project-information-title" class="text-base font-semibold text-white">Información</h2>
+          <h2 id="project-information-title" class="text-base font-semibold text-white">{t.detail.information}</h2>
           <dl class="mt-4 grid grid-cols-3 gap-3 lg:mt-5 lg:block lg:space-y-5">
             <div>
-              <dt class="text-[0.625rem] uppercase tracking-[0.12em] text-zinc-600 lg:text-xs">Estado</dt>
+              <dt class="text-[0.625rem] uppercase tracking-[0.12em] text-zinc-600 lg:text-xs">{t.detail.status}</dt>
               <dd class="mt-1.5 inline-flex items-center gap-2 text-xs text-zinc-300 lg:mt-2 lg:text-sm">
                 <span
                   class:list={[
@@ -172,28 +213,28 @@ const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undef
               </dd>
             </div>
             <div>
-              <dt class="text-[0.625rem] uppercase tracking-[0.12em] text-zinc-600 lg:text-xs">Categoría</dt>
+              <dt class="text-[0.625rem] uppercase tracking-[0.12em] text-zinc-600 lg:text-xs">{t.detail.category}</dt>
               <dd class="mt-1.5 text-xs leading-5 text-zinc-300 lg:mt-2 lg:text-sm">{project.developmentType ?? project.categoryLabel}</dd>
             </div>
             <div>
-              <dt class="text-[0.625rem] uppercase tracking-[0.12em] text-zinc-600 lg:text-xs">Dispositivos</dt>
+              <dt class="text-[0.625rem] uppercase tracking-[0.12em] text-zinc-600 lg:text-xs">{t.detail.devices}</dt>
               <dd class="mt-2 lg:mt-3">
                 <ul class="flex flex-wrap gap-x-3 gap-y-2 lg:block lg:space-y-2.5">
                   {project.platforms.map((platform) => (
                     <li class="flex items-center gap-1.5 text-xs text-zinc-300 lg:gap-2 lg:text-sm">
                       {platform === "web" ? (
-                        <svg class="size-4 text-[var(--project-accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                        <svg class="size-4 text-(--project-accent)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
                           <rect x="3" y="4" width="18" height="16" rx="2" />
                           <path d="M3 8h18" />
                           <path d="M7 6h.01" />
                         </svg>
                       ) : platform === "desktop" ? (
-                        <svg class="size-4 text-[var(--project-accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                        <svg class="size-4 text-(--project-accent)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
                           <rect x="3" y="3" width="18" height="14" rx="2" />
                           <path d="M8 21h8M12 17v4" />
                         </svg>
                       ) : (
-                        <svg class="size-4 text-[var(--project-accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                        <svg class="size-4 text-(--project-accent)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
                           <rect x="7" y="2" width="10" height="20" rx="2" />
                           <path d="M11 18h2" />
                         </svg>
@@ -209,11 +250,11 @@ const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undef
 
         {project.caseStudy?.contributions?.length && (
           <section class="order-4 border-t border-zinc-800/80 pt-8 lg:mt-8 lg:pt-7" aria-labelledby="project-contribution-title">
-            <h2 id="project-contribution-title" class="text-base font-semibold text-white">Mi aporte</h2>
+            <h2 id="project-contribution-title" class="text-base font-semibold text-white">{t.detail.contribution}</h2>
             <ul class="mt-4 space-y-2.5">
               {project.caseStudy.contributions.map((contribution) => (
                 <li class="flex gap-2 text-sm leading-6 text-zinc-400">
-                  <span class="font-mono text-[var(--project-accent)]" aria-hidden="true">/</span>
+                  <span class="font-mono text-(--project-accent)" aria-hidden="true">/</span>
                   <span>{contribution}</span>
                 </li>
               ))}
@@ -223,22 +264,23 @@ const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undef
       </aside>
     </div>
 
-    <nav class="mx-auto mt-12 flex max-w-4xl justify-center border-t border-zinc-800/80 pt-6 sm:mt-16 md:items-center md:justify-between" aria-label="Navegación entre proyectos">
-      <a href="/projects" class="group inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60">
+    <!-- Navegación del catálogo -->
+    <nav class="mx-auto mt-12 flex max-w-4xl justify-center border-t border-zinc-800/80 pt-6 sm:mt-16 md:items-center md:justify-between" aria-label={t.detail.projectNavigation}>
+      <a href={localizePath("/projects", language)} class="group inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60">
         <svg class="size-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transform-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 16l-4-4m0 0 4-4m-4 4h18" />
         </svg>
-        Todos los proyectos
+        {t.detail.allProjects}
       </a>
 
       {nextProject && (
         <a
-          href={`/projects/${nextProject.slug}`}
-          aria-label={`Siguiente proyecto: ${nextProject.title}`}
+          href={localizePath(`/projects/${nextProject.slug}`, language)}
+          aria-label={`${t.detail.nextProject}: ${nextProject.title}`}
           class="group hidden items-center gap-2 text-sm text-zinc-500 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 md:inline-flex"
         >
-          <span class="text-zinc-600">Siguiente:</span>
-          <span class="font-medium text-zinc-300 transition-colors duration-200 group-hover:text-[var(--project-accent)]">{nextProject.title}</span>
+          <span class="text-zinc-600">{t.detail.next}</span>
+          <span class="font-medium text-zinc-300 transition-colors duration-200 group-hover:text-(--project-accent)">{nextProject.title}</span>
           <svg class="size-4 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transform-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 8l4 4m0 0-4 4m4-4H3" />
           </svg>
@@ -249,6 +291,7 @@ const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undef
 </Layout>
 
 <style>
+  /* Ajustes de los botones en dispositivos móviles */
   @media (max-width: 639px) {
     .project-actions .project-action {
       width: 100%;
@@ -260,6 +303,7 @@ const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undef
     }
   }
 
+  /* Botones de acceso al proyecto y al repositorio */
   .project-action {
     display: inline-flex;
     height: 2.25rem;
@@ -293,6 +337,7 @@ const repoUrl = isAvailableProjectUrl(project.repoUrl) ? project.repoUrl : undef
     transform: scale(0.98);
   }
 
+  /* Reduce las transiciones cuando el usuario lo solicita */
   @media (prefers-reduced-motion: reduce) {
     .project-action {
       transition: none;
