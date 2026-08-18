@@ -4,12 +4,23 @@ import type { Tech } from "../../data/projects";
 
 /* Iconos disponibles para las tecnologías */
 import AWSIcon from "../icons/AWS.astro";
+import AstroIcon from "../icons/Astro.astro";
+import BankersAlgorithmIcon from "../icons/BankersAlgorithm.astro";
+import CSharpIcon from "../icons/CSharp.astro";
 import FastAPIIcon from "../icons/FastAPI.astro";
 import FlutterIcon from "../icons/Flutter.astro";
+import JavaIcon from "../icons/Java.astro";
+import JavaScriptIcon from "../icons/JavaScript.astro";
+import NetIcon from "../icons/Net.astro";
+import NetBeansIcon from "../icons/NetBeans.astro";
 import NextJSIcon from "../icons/NextJS.astro";
+import NetworkIcon from "../icons/Network.astro";
+import NodeJSIcon from "../icons/NodeJS.astro";
 import PythonIcon from "../icons/Python.astro";
 import PostgreSQLIcon from "../icons/PostgreSQL.astro";
+import SQLServerIcon from "../icons/SQLServer.astro";
 import SupabaseIcon from "../icons/Supabase.astro";
+import TailwindCssIcon from "../icons/TailwindCss.astro";
 import TypeScriptIcon from "../icons/TypeScript.astro";
 
 /* Propiedades que recibe el componente */
@@ -23,12 +34,24 @@ const { tech } = Astro.props;
 /* Relación entre cada nombre de icono y su componente */
 const iconMap = {
   aws: AWSIcon,
+  astro: AstroIcon,
+  bankersalgorithm: BankersAlgorithmIcon,
+  csharp: CSharpIcon,
+  dotnet: NetIcon,
   fastapi: FastAPIIcon,
   flutter: FlutterIcon,
+  java: JavaIcon,
+  javascript: JavaScriptIcon,
+  javaswing: JavaIcon,
+  netbeans: NetBeansIcon,
   nextjs: NextJSIcon,
+  nodejs: NodeJSIcon,
   python: PythonIcon,
   postgresql: PostgreSQLIcon,
+  sqlserver: SQLServerIcon,
   supabase: SupabaseIcon,
+  tailwindcss: TailwindCssIcon,
+  tcpip: NetworkIcon,
   typescript: TypeScriptIcon,
 } as const;
 

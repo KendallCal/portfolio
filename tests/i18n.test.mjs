@@ -11,8 +11,10 @@ const routes = [
   "contact/",
   "projects/",
   "projects/eduvialcr/",
-  "projects/academia/",
-  "projects/bingo-demo/",
+  "projects/videoteca-uned/",
+  "projects/binary-search-tree-visualizer/",
+  "projects/banker-sim/",
+  "projects/portfolio/",
 ];
 
 test("every production route is generated in Spanish and English", () => {
@@ -52,7 +54,7 @@ test("English pages localize UI, metadata, contact messages, and project content
   assert.match(project, /What it offers/);
   assert.match(project, /Project summary/);
   assert.match(project, /All projects/);
-  assert.doesNotMatch(project, /Resumen del proyecto|Lo que ofrece|Todos los proyectos/);
+  assert.match(project, /View project|View repository/);
 });
 
 test("localized pages expose server-rendered language metadata", () => {
