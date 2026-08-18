@@ -1,6 +1,6 @@
 <div align="center">
 
-# <K/> Kendall Calderón — Portfolio
+# <K/> Kendall Calderón - Portfolio
 
 ### Personal developer portfolio focused on Software Development, Cloud Computing & Applied AI
 
@@ -14,7 +14,7 @@ A modern, responsive portfolio built to showcase my **projects, professional exp
 
 <br>
 
-<img src="docs/portfolio-preview.png" alt="Kendall Calderón Portfolio" width="100%">
+<img src="Portfolio.png" alt="Kendall Calderón Portfolio" width="100%">
 
 </div>
 
