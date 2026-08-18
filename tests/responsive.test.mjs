@@ -45,14 +45,14 @@ test("project cards keep desktop dimensions and gain mobile-safe sizing", () => 
   const carousel = readSource("src/components/projects/ProjectCarousel.astro");
   const gallery = readSource("src/components/projects/ProjectGallery.astro");
 
-  assert.match(card, /h-\[430px\]/);
-  assert.match(card, /sm:h-\[420px\]/);
+  assert.match(card, /h-107\.5/);
+  assert.match(card, /sm:h-105/);
   assert.match(card, /max-w-full/);
   assert.match(card, /size-11/);
   assert.match(card, /sm:size-8/);
   assert.match(carousel, /sm:w-1\/2/);
   assert.match(carousel, /lg:-left-8/);
-  assert.match(carousel, /hidden -translate-y-1\/2 sm:inline-flex/);
+  assert.match(carousel, /hidden -translate-y-1\/2 sm:left-0 sm:inline-flex/);
   assert.match(carousel, /AUTOPLAY_DELAY_MS/);
   assert.match(carousel, /touchstart/);
   assert.match(carousel, /touchend/);
@@ -105,8 +105,8 @@ test("technology data contains only the selected sixteen tools", () => {
     "Claude",
     "OpenCode",
     "MySQL",
-    "VSA",
-    "VSM",
+    "Visual Studio Code",
+    "Visual Studio",
     "Next.js",
     "JavaScript",
   ]);

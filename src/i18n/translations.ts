@@ -41,7 +41,7 @@ const es = {
       converge: "convergen para transformar",
       challenges: " desafíos complejos ",
       into: "en experiencias",
-      outcomes: " simples, eficientes y escalables ",
+      outcomes: " simples, eficientes y escalables",
     },
     projectsAria: "Ir a la sección de Proyectos",
   },
@@ -66,6 +66,7 @@ const es = {
       mobile: "Móvil",
       ai: "Inteligencia artificial",
       web: "Web",
+      desktop: "Escritorio",
     },
     filterAria: "Filtrar proyectos por categoría",
     all: "Todos",
@@ -99,8 +100,8 @@ const es = {
   homeAbout: {
     title: "Sobre mí",
     paragraphs: [
-      "Desarrollador de software y profesional de TI, enfocado en construir",
-      "soluciones web, cloud y de inteligencia artificial",
+      "Desarrollador de software y profesional de TI, enfocado en construir ",
+      "soluciones web, cloud y de inteligencia artificial ",
       "claras, eficientes y bien pensadas.",
       "Mi paso por soporte técnico y mentoría en programación me dio una mirada analítica: entender el problema real antes de escribir una línea de código, y explicar el porqué de cada decisión técnica.",
     ],
@@ -288,6 +289,7 @@ const en = {
       mobile: "Mobile",
       ai: "Artificial intelligence",
       web: "Web",
+      desktop: "Desktop",
     },
     filterAria: "Filter projects by category",
     all: "All",
@@ -321,8 +323,8 @@ const en = {
   homeAbout: {
     title: "About me",
     paragraphs: [
-      "Software developer and IT professional focused on building",
-      "web, cloud, and artificial intelligence solutions",
+      "Software developer and IT professional focused on building ",
+      "web, cloud, and artificial intelligence solutions ",
       "that are clear, efficient, and thoughtfully designed.",
       "My experience in technical support and programming mentorship gave me an analytical perspective: understand the real problem before writing a line of code, and explain the reasoning behind every technical decision.",
     ],

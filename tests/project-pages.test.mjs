@@ -37,12 +37,28 @@ test("featured projects use an ordered two-card carousel with conditional contro
   );
 
   assert.match(gridSource, /projects\.filter\(\(project\) => project\.featured\)/);
-  assert.match(gridSource, /<ProjectCarousel projects=\{visibleProjects\}/);
+  assert.match(gridSource, /<ProjectCarousel\s+projects=\{visibleProjects\}/);
   assert.match(carouselSource, /projects\.length > 2/);
   assert.match(carouselSource, /data-project-carousel/);
   assert.match(carouselSource, /Carousel-Chevron-Left\.astro/);
   assert.match(carouselSource, /Carousel-Chevron-Right\.astro/);
   assert.match(carouselSource, /translate3d/);
+});
+
+test("featured projects follow the requested portfolio order", () => {
+  const homepage = readBuiltPage("/index.html");
+  const cardTitles = extractProjectCards(homepage).map((card) => {
+    const [, title = ""] = card.match(/<h3[^>]*>\s*([^<]+?)\s*<\/h3>/) ?? [];
+    return title;
+  });
+
+  assert.deepEqual(cardTitles, [
+    "EduvialCR",
+    "Personal Portfolio",
+    "Binary Search Tree Visualizer",
+    "VideotecaUNED",
+    "BankerSim",
+  ]);
 });
 
 test("project details render the full description, product value, platform, and clean metadata", () => {
@@ -53,13 +69,23 @@ test("project details render the full description, product value, platform, and 
       platform: "Web[\\s\\S]*Móvil",
     },
     {
-      slug: "academia",
-      fullDescription: "AcademIA es una plataforma multiagente",
-      platform: "Web",
+      slug: "videoteca-uned",
+      fullDescription: "VideotecaUNED fue desarrollado como proyecto final",
+      platform: "Escritorio",
     },
     {
-      slug: "bingo-demo",
-      fullDescription: "Bingo Demo es un proyecto experimental",
+      slug: "binary-search-tree-visualizer",
+      fullDescription: "Binary Search Tree Visualizer fue desarrollado",
+      platform: "Escritorio",
+    },
+    {
+      slug: "banker-sim",
+      fullDescription: "BankerSim fue desarrollado",
+      platform: "Escritorio",
+    },
+    {
+      slug: "portfolio",
+      fullDescription: "Este sitio funciona como el espacio central",
       platform: "Web",
     },
   ];
@@ -78,29 +104,33 @@ test("project details render the full description, product value, platform, and 
   }
 
   const eduvial = readBuiltPage("/projects/eduvialcr/index.html");
-  const academia = readBuiltPage("/projects/academia/index.html");
-  const bingo = readBuiltPage("/projects/bingo-demo/index.html");
+  const videoteca = readBuiltPage("/projects/videoteca-uned/index.html");
+  const bst = readBuiltPage("/projects/binary-search-tree-visualizer/index.html");
+  const bankerSim = readBuiltPage("/projects/banker-sim/index.html");
+  const portfolio = readBuiltPage("/projects/portfolio/index.html");
   assert.match(eduvial, /Información/);
   assert.match(eduvial, /Full stack/);
   assert.match(eduvial, /Dispositivos/);
   assert.match(eduvial, /Mi aporte/);
   assert.doesNotMatch(eduvial, /Navegación del pie de página/);
-  assert.match(academia, /Información/);
-  assert.match(academia, /Mi aporte/);
-  assert.match(bingo, /Información/);
-  assert.match(bingo, /Mi aporte/);
+  for (const project of [videoteca, bst, bankerSim, portfolio]) {
+    assert.match(project, /Información/);
+    assert.match(project, /Mi aporte/);
+  }
 });
 
 test("project actions are conditional, compact, and use the project accent", () => {
   const eduvial = readBuiltPage("/projects/eduvialcr/index.html");
-  const academia = readBuiltPage("/projects/academia/index.html");
+  const videoteca = readBuiltPage("/projects/videoteca-uned/index.html");
+  const portfolio = readBuiltPage("/projects/portfolio/index.html");
   const detailSource = readSource("src/pages/projects/[slug].astro");
 
   assert.match(eduvial, />\s*Ver proyecto\s*</);
   assert.doesNotMatch(eduvial, />\s*Ver repositorio\s*</);
-  assert.match(academia, />\s*Ver proyecto\s*</);
-  assert.match(academia, />\s*Ver repositorio\s*</);
-  assert.match(readBuiltPage("/projects/bingo-demo/index.html"), />\s*Ver repositorio\s*</);
+  assert.match(videoteca, />\s*Ver repositorio\s*</);
+  assert.doesNotMatch(videoteca, />\s*Ver proyecto\s*</);
+  assert.match(portfolio, />\s*Ver proyecto\s*</);
+  assert.match(portfolio, />\s*Ver repositorio\s*</);
   assert.doesNotMatch(eduvial, /tu-usuario/);
   assert.doesNotMatch(readBuiltPage("/index.html"), /tu-usuario|tu-dominio/);
   assert.match(detailSource, /class="project-action"/);
@@ -112,6 +142,34 @@ test("project actions are conditional, compact, and use the project accent", () 
   assert.match(detailSource, /isAvailableProjectUrl/);
 });
 
+test("every technology used by the project catalog has an intentional icon mapping", () => {
+  const badgeSource = readSource("src/components/projects/TechBadge.astro");
+  const detailSource = readSource(
+    "src/components/projects/ProjectTechnology.astro",
+  );
+
+  const mappings = [
+    "astro: AstroIcon",
+    "bankersalgorithm: BankersAlgorithmIcon",
+    "csharp: CSharpIcon",
+    "dotnet: NetIcon",
+    "java: JavaIcon",
+    "javascript: JavaScriptIcon",
+    "javaswing: JavaIcon",
+    "netbeans: NetBeansIcon",
+    "nextjs: NextJSIcon",
+    "nodejs: NodeJSIcon",
+    "sqlserver: SQLServerIcon",
+    "tailwindcss: TailwindCssIcon",
+    "tcpip: NetworkIcon",
+  ];
+
+  for (const mapping of mappings) {
+    assert.match(badgeSource, new RegExp(mapping));
+    assert.match(detailSource, new RegExp(mapping));
+  }
+});
+
 test("the gallery is a data-driven carousel with optional privacy-enhanced video", () => {
   const gallerySource = readSource("src/components/projects/ProjectGallery.astro");
   const dataSource = readSource("src/data/projects.ts");
@@ -119,8 +177,10 @@ test("the gallery is a data-driven carousel with optional privacy-enhanced video
 
   assert.match(dataSource, /type ProjectMedia/);
   assert.match(dataSource, /interface ProjectCaseStudy/);
-  assert.match(dataSource, /eduvial-simulator-selection-concept\.webp/);
-  assert.match(dataSource, /type: "youtube"/);
+  assert.match(dataSource, /VideotecaUNED\.webp/);
+  assert.match(dataSource, /BST_Visualizer\.webp/);
+  assert.match(dataSource, /Simulador\.webp/);
+  assert.match(dataSource, /Portfolio\.webp/);
   assert.match(dataSource, /platforms: ProjectPlatform\[\]/);
   assert.match(gallerySource, /youtube-nocookie\.com\/embed/);
   assert.match(gallerySource, /data-gallery-next/);
